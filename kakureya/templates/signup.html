@@ -1,28 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Inscripcion</h1>
+{% extends 'base.html' %}
 
-    <!-- 
-    action="/signup/" 
-    Se usa para enviar los datos a una determinada pagina,
+{% block content %}
+<h1>Inscripcion</h1>
 
-    method="post"
-    POST se usa para cargar archivos de manera privada 
-    -->
+{{error}}
 
-    <form method="post">
-        {% csrf_token %}
-        {{myform.as_p}}
+<form method="post">
+    {% csrf_token %}
+    {{myform.as_p}}
 
-        <button>
-            Enviar
-        </button>
-    </form>
-</body>
-</html>
+    <button>
+        Enviar
+    </button>
+</form>
+{% endblock %}
