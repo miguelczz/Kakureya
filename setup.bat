@@ -1,6 +1,6 @@
 @echo off
 echo =====================================
-echo === Configuración del Entorno Virtual ===
+echo = Configuración del Entorno Virtual =
 echo =====================================
 
 :: Verificar si el entorno virtual existe
@@ -24,6 +24,6 @@ if exist requirements.txt (
     exit /b 1
 )
 
-echo =====================================
-echo === Entorno Configurado Exitosamente ===
-echo =====================================
+echo ====================================
+echo = Entorno Configurado Exitosamente =
+echo ====================================
