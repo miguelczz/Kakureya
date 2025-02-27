@@ -1,0 +1,8 @@
+Comandos importantes!
+
+1. pip freeze > requirements.txt
+
+Credenciales Administrador
+
+Username: admin
+Password: kakureya
