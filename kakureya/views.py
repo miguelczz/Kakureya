@@ -70,11 +70,22 @@ def create_product(request):
 
 
 def product_detail(request, product_id):
-    try:
+    if request.method == 'GET':
         product = get_object_or_404(Product, pk=product_id)
-        return render(request, 'product_detail.html', {'product': product})
-    except:
-        return render(request, 'error.html', {'message': 'Producto no encontrado'})
+        form = ProductForm(instance=product)
+        return render(request, 'product_detail.html', {'product': product, 'form': form})
+    else:
+        try:
+            product = get_object_or_404(Product, pk=product_id)
+            form = ProductForm(request.POST, instance=product)
+            form.save()
+            return redirect('products')
+        except ValueError:
+            return render(request, 'product_detail.html', {
+                'product': product,
+                'form': form,
+                'error': 'Campos invalidos'
+            })
 
 
 def signout(request):
