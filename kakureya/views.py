@@ -1,9 +1,11 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.db import IntegrityError
+from .forms import ProductForm
+from .models import Product
 
 
 def home(request):
@@ -41,8 +43,38 @@ def signup(request):
         })
 
 
-def tasks(request):
-    return render(request, 'tasks.html')
+def products(request):
+    products = Product.objects.all()
+    return render(request, 'products.html', {
+        'products': products
+    })
+
+
+def create_product(request):
+    if request.method == 'GET':
+        return render(request, 'create_product.html', {
+            'form': ProductForm
+        })
+    elif request.method == 'POST':
+        try:
+            form = ProductForm(request.POST)
+            new_product = form.save(commit=False)
+            new_product.user = request.user
+            new_product.save()
+            return redirect('products')
+        except ValueError:
+            return render(request, 'create_product.html', {
+                'form': ProductForm,
+                'error': 'Campos invalidos'
+            })
+
+
+def product_detail(request, product_id):
+    try:
+        product = get_object_or_404(Product, pk=product_id)
+        return render(request, 'product_detail.html', {'product': product})
+    except:
+        return render(request, 'error.html', {'message': 'Producto no encontrado'})
 
 
 def signout(request):
