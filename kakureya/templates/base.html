@@ -10,10 +10,11 @@
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/tasks">Tareas</a></li>
-
+            
             {% if user.is_authenticated %}
-                <li><a href="/logout">Cerrar sesion</a></li>
+            <li><a href="/logout">Cerrar sesion</a></li>
+            <li><a href="/products">Productos</a></li>
+            <li><a href="/products/create">Crear producto</a></li>
             {% else %}
             <li><a href="/signup">Registrarse</a></li>
             <li><a href="/signin">Iniciar sesion</a></li>
