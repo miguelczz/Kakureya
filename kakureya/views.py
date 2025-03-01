@@ -1,11 +1,12 @@
-from django.contrib.auth import login, logout, authenticate
-from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from django.utils import timezone
 from .forms import ProductForm
 from .models import Product
-from django.utils import timezone
 
 
 def home(request):
@@ -42,13 +43,14 @@ def signup(request):
             'error': 'Las contraseñas no coinciden'
         })
 
-
+@login_required
 def products(request):
     products = Product.objects.all()
     return render(request, 'products.html', {
         'products': products
     })
 
+@login_required
 
 def products_added(request):
     products = Product.objects.filter(
@@ -57,6 +59,7 @@ def products_added(request):
         'products': products
     })
 
+@login_required
 
 def create_product(request):
     if request.method == 'GET':
@@ -76,6 +79,7 @@ def create_product(request):
                 'error': 'Campos invalidos'
             })
 
+@login_required
 
 def product_detail(request, product_id):
     if request.method == 'GET':
@@ -95,6 +99,7 @@ def product_detail(request, product_id):
                 'error': 'Campos invalidos'
             })
 
+@login_required
 
 def add_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
@@ -106,6 +111,7 @@ def add_product(request, product_id):
     else:
         return render(request, 'add_product.html', {'product': product})
 
+@login_required
 
 def delete_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
@@ -114,6 +120,7 @@ def delete_product(request, product_id):
         product.delete()
         return redirect('products')
 
+@login_required
 
 def quit_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
@@ -123,6 +130,7 @@ def quit_product(request, product_id):
         product.save()
         return redirect('products_added')
 
+@login_required
 
 def signout(request):
     logout(request)
