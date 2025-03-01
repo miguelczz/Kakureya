@@ -1,11 +1,11 @@
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.models import User
-from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.db import IntegrityError
 from .forms import ProductForm
 from .models import Product
+from django.utils import timezone
 
 
 def home(request):
@@ -50,6 +50,14 @@ def products(request):
     })
 
 
+def products_added(request):
+    products = Product.objects.filter(
+        added__isnull=False).order_by('-added')
+    return render(request, 'products.html', {
+        'products': products
+    })
+
+
 def create_product(request):
     if request.method == 'GET':
         return render(request, 'create_product.html', {
@@ -86,6 +94,34 @@ def product_detail(request, product_id):
                 'form': form,
                 'error': 'Campos invalidos'
             })
+
+
+def add_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.method == 'POST':
+        product.added = timezone.now()
+        product.save()
+        return redirect('products')
+    else:
+        return render(request, 'add_product.html', {'product': product})
+
+
+def delete_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.method == 'POST':
+        product.delete()
+        return redirect('products')
+
+
+def quit_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.method == 'POST':
+        product.added = None
+        product.save()
+        return redirect('products_added')
 
 
 def signout(request):
