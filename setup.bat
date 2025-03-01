@@ -1,6 +1,6 @@
 @echo off
 echo =====================================
-echo = Configuración del Entorno Virtual =
+echo = Configuracion del Entorno Virtual 
 echo =====================================
 
 :: Verificar si el entorno virtual existe
