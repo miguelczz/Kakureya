@@ -1,18 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Productos</h1>
+<main class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1 class="text-center display-3 py-3">Productos</h1>
 
-<ul>
-    {% for product in products %}
-    <li>
-        <a href="{%url 'product_detail' product.id%}">
-            <h1>{{product.name}}</h1>
-            <p>{{product.description}}</p>
-            <p>{{product.price}} $</p>
-        </a>
-    </li>
-    {% endfor %}
-</ul>
+            <ul class="list-group">
+                {% for product in products %}
+                <a class="list-group-item" href="{% url 'product_detail' product.id %}">
+                    <header class="d-flex justify-content-between">
+                        <h1 class="fw-bold">{{product.name}}</h1>
+                        <p>{{product.price}}$</p>
+                    </header>
+                    
+                    <p>{{product.description}}</p>
+                </a>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</main>
 
 {% endblock %}

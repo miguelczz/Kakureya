@@ -1,19 +1,44 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Create Products</h1>
+<main class="container">
+    <div class="row">
+        <div class="col-md-4 offset-md-4 mt-3">
+            <form action="/products/create/" method="POST" class="card card-body">
+                <h1 class="text-center">Create Products</h1>
+      
+                {{ error }}
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="{{ form.name.id_for_label }}">Nombre</label>
+                    {{ form.name }}
+                </div>
 
-{{error}}
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}">Descripción</label>
+                    {{ form.description }}
+                </div>
 
-  <form action="/products/create/" method="POST">
-    {% csrf_token %}
-    
-    {{ form.as_p }}
+                <div class="mb-3">
+                    <label for="{{ form.price.id_for_label }}">Precio</label>
+                    {{ form.price }}
+                </div>
 
-    <button>
-      Create
-    </button>
+                <div class="mb-3">
+                    <label for="{{ form.image.id_for_label }}">Imagen</label>
+                    {{ form.image }}
+                </div>
 
-  </form>
-
+                <div class="mb-3">
+                    <label for="{{ form.category.id_for_label }}">Categoria</label>
+                    {{ form.category }}
+                </div>
+            
+                <button class="btn btn-dark mt-2 w-100">Crear</button>
+            
+            </form>
+        </div>
+    </div>
+</main>
 {% endblock %}
