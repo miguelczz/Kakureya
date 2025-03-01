@@ -30,7 +30,7 @@ def signup(request):
 
                 user.save()
                 login(request, user)
-                return redirect('tasks')
+                return redirect('products')
 
             except IntegrityError:
                 return render(request, 'signup.html', {
