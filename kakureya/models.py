@@ -7,11 +7,11 @@ from django.contrib.auth.models import User
 class Product(models.Model):
 
     CATEGORY_CHOICES = [
-        ("ramen", "Ramen"),
         ("sushi", "Sushi"),
-        ("bento", "Bento"),
-        ("tempura", "Tempura"),
-        ("mochi", "Mochi"),
+        ("ramen", "Ramen"),
+        ("yakitori", "Yakitori "),
+        ("donburi", "Donburi"),
+        ("postres", "Postres"),
     ]
 
     name = models.CharField(max_length=100)
@@ -21,6 +21,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    added = models.DateTimeField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     category = models.CharField(
         max_length=50, choices=CATEGORY_CHOICES, default="Sin categoría"

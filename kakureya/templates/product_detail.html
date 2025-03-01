@@ -8,10 +8,42 @@
 <form method="POST">
     {% csrf_token %}
     {{form.as_p}}
-
+    
+    {% if user.username == 'admin' %}
     <button>
         Actualizar
     </button>
+    {% endif %}
+</form>
+
+<form action="{% url 'add_product' product.id %}" method="POST">
+    {% csrf_token %}
+
+    {% if user.username != 'admin' and product.added == null %}
+    <button>
+        Añadir al carrito
+    </button>
+    {% endif %}
+</form>
+
+<form action="{% url 'delete_product' product.id %}" method="POST">
+    {% csrf_token %}
+
+    {% if user.username == 'admin' %}
+    <button>
+        Eliminar
+    </button>
+    {% endif %}
+</form>
+
+<form action="{% url 'quit_product' product.id %}" method="POST">
+    {% csrf_token %}
+
+    {% if user.username != 'admin' and product.added != null %}
+    <button>
+        Quitar
+    </button>
+    {% endif %}
 </form>
 
 {% endblock %}
