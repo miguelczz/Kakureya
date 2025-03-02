@@ -21,7 +21,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    added = models.DateTimeField(null=True, blank=True)
+    added = models.DateTimeField(auto_now_add=True, null=True) 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     category = models.CharField(
         max_length=50, choices=CATEGORY_CHOICES, default="Sin categoría"
