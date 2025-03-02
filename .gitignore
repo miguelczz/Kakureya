@@ -1,5 +1,6 @@
 # Ignorar entorno virtual
 venv/
+db.sqlite3
 
 # Ignorar archivos de configuración de entornos
 .env
