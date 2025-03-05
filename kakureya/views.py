@@ -33,7 +33,7 @@ def products_added(request):
     return render(request, 'products.html', {'products': get_added_products()})
 
 @login_required
-def create_product_view(request):
+def create_product(request):
     if request.method == 'GET':
         return render(request, 'create_product.html', {'form': ProductForm()})
     
@@ -46,7 +46,6 @@ def create_product_view(request):
             return redirect('products')
         else:
             return render(request, 'create_product.html', {'form': form, 'error': "Error al crear el producto"})
-
 
 @login_required
 def product_detail(request, product_id):
