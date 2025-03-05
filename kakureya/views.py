@@ -2,6 +2,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
+
+from kakureya.models import Product
 from .services import (
     register_user, authenticate_user, logout_user,
     get_all_products, get_added_products, create_product,
@@ -33,12 +35,18 @@ def products_added(request):
 @login_required
 def create_product_view(request):
     if request.method == 'GET':
-        return render(request, 'create_product.html', {'form': ProductForm()})  # Instantiate the form correctly
-    else:
-        error = create_product(request)
-        if error:
-            return render(request, 'create_product.html', {'form': ProductForm(), 'error': error})  # Same here
-        return redirect('products')
+        return render(request, 'create_product.html', {'form': ProductForm()})
+    
+    if request.method == 'POST':
+        form = ProductForm(request.POST)  # Recibe los datos del formulario
+        if form.is_valid():
+            new_product = form.save(commit=False)
+            new_product.user = request.user  # Asigna el usuario actual al producto
+            new_product.save()
+            return redirect('products')
+        else:
+            return render(request, 'create_product.html', {'form': form, 'error': "Error al crear el producto"})
+
 
 @login_required
 def product_detail(request, product_id):
