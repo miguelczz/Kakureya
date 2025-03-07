@@ -73,10 +73,12 @@ def delete_product_view(request, product_id):
         return redirect('products')
 
 @login_required
-def quit_product_view(request, product_id):
+def quit_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
+
     if request.method == 'POST':
-        quit_product(product)
+        product.added = None
+        product.save()
         return redirect('products_added')
 
 def signout(request):
