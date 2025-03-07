@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -59,11 +60,15 @@ def product_detail(request, product_id):
         return redirect('products')
 
 @login_required
-def add_product_view(request, product_id):
+def add_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
+
     if request.method == 'POST':
-        add_product(product)
+        product.added = timezone.now()
+        product.save()
         return redirect('products')
+    else:
+        return render(request, 'add_product.html', {'product': product})
 
 @login_required
 def delete_product_view(request, product_id):
