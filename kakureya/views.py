@@ -71,11 +71,12 @@ def add_product(request, product_id):
         return render(request, 'add_product.html', {'product': product})
 
 @login_required
-def delete_product_view(request, product_id):
-    product = get_object_or_404(Product, pk=product_id)
-    if request.method == 'POST':
-        delete_product(product)
-        return redirect('products')
+def delete_product(request, product_id):
+     product = get_object_or_404(Product, pk=product_id)
+ 
+     if request.method == 'POST':
+         product.delete()
+         return redirect('products')
 
 @login_required
 def quit_product(request, product_id):
