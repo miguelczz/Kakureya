@@ -80,13 +80,9 @@ WSGI_APPLICATION = 'CRUD.wsgi.application'
 
 # Database
 
-URL_RENDER = 'postgresql://kakureya_user:plmJnEq4kmYCtmcnKW8RrpV2S0MuPTrL@dpg-cv2eqht2ng1s738p8erg-a/kakureya'
-
-URL_LOCAL =  'postgresql://postgres:20122004@localhost/kakureya'
-
 DATABASES = {
     'default': dj_database_url.config(
-        default = URL_LOCAL,
+        default='postgresql://postgres:1234@localhost/kakureya',
         conn_max_age=600
     )
 }
