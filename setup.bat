@@ -24,6 +24,20 @@ if exist requirements.txt (
     exit /b 1
 )
 
+:: Crear el archivo .env si no existe
+echo.
+echo =====================================
+echo = Configuracion de variables de entorno =
+echo =====================================
+
+if exist .env (
+    echo El archivo .env ya existe. No se modificará.
+) else (
+    echo Creando archivo .env...
+    echo DATABASE_URL=postgresql://postgres:contraseña@localhost/kakureya > .env
+    echo Archivo .env creado con éxito.
+)
+
 echo ====================================
 echo = Entorno Configurado Exitosamente =
 echo ====================================
