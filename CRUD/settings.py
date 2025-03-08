@@ -79,11 +79,14 @@ WSGI_APPLICATION = 'CRUD.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
+URL_RENDER = 'postgresql://kakureya_user:plmJnEq4kmYCtmcnKW8RrpV2S0MuPTrL@dpg-cv2eqht2ng1s738p8erg-a/kakureya'
+
+URL_LOCAL =  'postgresql://postgres:20122004@localhost/kakureya'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://postgres:20122004@localhost/postgres',
+        default = URL_LOCAL,
         conn_max_age=600
     )
 }
