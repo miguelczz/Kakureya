@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'CRUD.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://postgres:20122004@localhost/postgres',
+        default='postgresql://postgres:1234@localhost/kakureya',
         conn_max_age=600
     )
 }
