@@ -8,16 +8,22 @@
 
             <ul class="list-group">
                 {% for product in products %}
-                <a class="list-group-item" href="{% url 'product_detail' product.id %}">
+                <li class="list-group-item">
                     <header class="d-flex justify-content-between">
-                        <h1 class="fw-bold">{{product.name}}</h1>
-                        <p>{{product.price}}$</p>
+                        <h5 class="fw-bold">{{ product.name }}</h5>
+                        <span>{{ product.price }} $</span>
                     </header>
-                    
-                    <p>{{product.description}}</p>
-                </a>
+                    <p>{{ product.description }}</p>
+            
+                    <form action="{% url 'add_to_cart' product.id %}" method="POST" class="d-flex align-items-center mt-2">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-dark ">Agregar al carrito</button>
+                        <input type="number" name="quantity" value="1" min="1" class="form-control me-2" style="width: 80px;">
+                    </form>
+                </li>
                 {% endfor %}
             </ul>
+            
         </div>
     </div>
 </main>
