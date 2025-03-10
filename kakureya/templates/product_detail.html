@@ -13,27 +13,27 @@
                 {% csrf_token %}
                 {{ form.as_p }}
 
-                {% if user.username == 'admin' %}
+                {% if user.username == 'kakureya' %}
                 <button class="btn btn-success">Actualizar</button>
                 {% endif %}
             </form>
 
             <div class="d-flex justify-content-">
-                {% if user.username != 'admin' and product.added == null %}
+                {% if user.username != 'kakureya' and product.added == null %}
                 <form action="{% url 'add_product' product.id %}" method="POST">
                     {% csrf_token %}
                     <button class="btn btn-dark">Agregar al carrito</button>
                 </form>
                 {% endif %}
 
-                {% if user.username == 'admin' %}
+                {% if user.username == 'kakureya' %}
                 <form action="{% url 'delete_product' product.id %}" method="POST">
                     {% csrf_token %}
                     <button class="btn btn-danger">Eliminar</button>
                 </form>
                 {% endif %}
 
-                {% if user.username != 'admin' and product.added != null %}
+                {% if user.username != 'kakureya' and product.added != null %}
                 <form action="{% url 'quit_product' product.id %}" method="POST">
                     {% csrf_token %}
                     <button class="btn btn-danger">Quitar</button>

@@ -1,12 +1,13 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from .models import Product, CartItem
 from django.db import IntegrityError
 from django.utils import timezone
 from .forms import ProductForm
-from .models import Product
+from django.contrib import messages
 
 
 def home(request):
@@ -51,13 +52,37 @@ def products(request):
     })
 
 @login_required
-
 def products_added(request):
-    products = Product.objects.filter(
-        added__isnull=False).order_by('-added')
-    return render(request, 'products.html', {
-        'products': products
+    cart_items = CartItem.objects.filter(user=request.user).select_related('product')
+    return render(request, 'products_added.html', {
+        'cart_items': cart_items
     })
+    
+@login_required
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.method == 'POST':
+        try:
+            quantity = int(request.POST.get('quantity', 1))
+            if quantity < 1:
+                quantity = 1
+        except ValueError:
+            quantity = 1
+    else:
+        quantity = 1
+
+    cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product)
+
+    if created:
+        cart_item.quantity = quantity
+    else:
+        cart_item.quantity += quantity
+    cart_item.save()
+
+    messages.success(request, f'Se agregaron {quantity} unidades de "{product.name}" al carrito.')
+
+    return redirect('products')
 
 @login_required
 
@@ -119,16 +144,6 @@ def delete_product(request, product_id):
     if request.method == 'POST':
         product.delete()
         return redirect('products')
-
-@login_required
-
-def quit_product(request, product_id):
-    product = get_object_or_404(Product, pk=product_id)
-
-    if request.method == 'POST':
-        product.added = None
-        product.save()
-        return redirect('products_added')
 
 @login_required
 
