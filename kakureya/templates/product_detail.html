@@ -1,48 +1,34 @@
 {% extends 'base.html' %}
+{% load group_filters %}
 
 {% block content %}
-
 <main class="container">
     <div class="row">
-        <div class="col-md-4 offset-md-4">
+        <div class="col-md-6 offset-md-3">
             <h1 class="text-center">{{ product.name }}</h1>
 
-            {{ error }}
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
 
-            <form method="POST" class="mb-3">
-                {% csrf_token %}
-                {{ form.as_p }}
-
-                {% if user.username == 'kakureya' %}
-                <button class="btn btn-success">Actualizar</button>
-                {% endif %}
-            </form>
-
-            <div class="d-flex justify-content-">
-                {% if user.username != 'kakureya' and product.added == null %}
-                <form action="{% url 'add_product' product.id %}" method="POST">
+            {% if user|in_group:"Administrador" %}
+            
+            <!-- Contenedor horizontal para ambos formularios -->
+            <div class="">
+                <form method="POST" class="mb-3">
                     {% csrf_token %}
-                    <button class="btn btn-dark">Agregar al carrito</button>
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">Actualizar</button>
                 </form>
-                {% endif %}
 
-                {% if user.username == 'kakureya' %}
-                <form action="{% url 'delete_product' product.id %}" method="POST">
+                <!-- Botón Eliminar en su propio formulario -->
+                <form action="{% url 'delete_product' product.id %}" method="POST" onsubmit="return confirm('¿Estás seguro que deseas eliminar este producto?')">
                     {% csrf_token %}
                     <button class="btn btn-danger">Eliminar</button>
                 </form>
-                {% endif %}
-
-                {% if user.username != 'kakureya' and product.added != null %}
-                <form action="{% url 'quit_product' product.id %}" method="POST">
-                    {% csrf_token %}
-                    <button class="btn btn-danger">Quitar</button>
-                </form>
-                {% endif %}
             </div>
-
+            {% endif %}
         </div>
     </div>
 </main>
-
 {% endblock %}
