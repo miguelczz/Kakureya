@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'kakureya',
+    'kakureya.apps.KakureyaConfig',
 ]
 
 MIDDLEWARE = [
