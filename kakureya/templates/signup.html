@@ -6,24 +6,44 @@
     <div class="row">
         <div class="col-md-4 offset-md-4">
             <form method="POST" class="card card-body">
-                <h1 >Registro</h1>
-            
-                {{error}}
+                <h1>Registro</h1>
+                
+                {% if error %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+                
                 {% csrf_token %}
-
+                
+                {{ form.non_field_errors }}
+                
                 <div class="mb-3">
                     <label for="username">Nombre de usuario</label>
+                    {{ form.username.errors }}
                     <input type="text" name="username" id="username" class="form-control" placeholder="Escriba su nombre" required>
                 </div>
 
                 <div class="mb-3">
+                    <label for="email">Correo electrónico</label>
+                    {{ form.email.errors }}
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Escriba su correo electrónico" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone_number">Número de celular</label>
+                    {{ form.phone_number.errors }}
+                    <input type="text" name="phone_number" id="phone_number" class="form-control" placeholder="Escriba su número de celular">
+                </div>
+
+                <div class="mb-3">
                     <label for="password1">Contraseña</label>
+                    {{ form.password1.errors }}
                     <input type="password" name="password1" id="password1" class="form-control" placeholder="Escriba su contraseña" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="password2">Confirme su contraseña</label>
-                    <input type="text" name="password2" id="password2" class="form-control" placeholder="Confirme su contraseña" required>
+                    {{ form.password2.errors }}
+                    <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirme su contraseña" required>
                 </div>
                 
                 <button class="btn btn-dark">

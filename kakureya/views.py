@@ -1,4 +1,3 @@
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -6,81 +5,75 @@ from django.contrib.auth.models import User
 from .models import Product, CartItem
 from django.db import IntegrityError
 from django.utils import timezone
-from .forms import ProductForm
+from .forms import ProductForm, UserRegisterForm
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import render, redirect
+from django.contrib.auth.forms import AuthenticationForm
+from .models import UserProfile
 
-
-#? Login process
-
-        
 def is_admin(user):
     return user.groups.filter(name='Administrador').exists()
 
-
 def home(request):
-
     return render(request, 'home.html')
 
-
 def signup(request):
-
     if request.method == 'GET':
         return render(request, 'signup.html', {
-            'form': UserCreationForm
+            'form': UserRegisterForm()
         })
-
     else:
-        if request.POST['password1'] == request.POST['password2']:
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
             try:
-                user = User.objects.create_user(
-                    username=request.POST['username'], password=request.POST['password1']
-                )
-
+                user = form.save(commit=False)
                 user.save()
                 login(request, user)
                 return redirect('products')
-
             except IntegrityError:
+                form.add_error(None, 'El usuario ya existe')
                 return render(request, 'signup.html', {
-                    'myform': UserCreationForm,
+                    'form': form,
                     'error': 'El usuario ya existe'
                 })
-
-        return render(request, 'signup.html', {
-            'myform': UserCreationForm,
-            'error': 'Las contraseñas no coinciden'
-        })
-
+        else:
+            return render(request, 'signup.html', {
+                'form': form,
+                'error': 'Formulario inválido. Por favor, corrija los errores a continuación.'
+            })
 
 @login_required
-
 def signout(request):
     logout(request)
     return redirect('home')
 
-
 def signin(request):
-    if request.method == 'GET':
-        return render(request, 'signin.html', {
-            'form': AuthenticationForm
+    if request.method == "GET":
+        return render(request, "signin.html", {
+            "form": AuthenticationForm()
         })
-    else:
-        user = authenticate(
-            request, username=request.POST['username'], password=request.POST['password']
-        )
 
-        if user is None:
-            return render(request, 'signin.html', {
-                'form': AuthenticationForm,
-                'error': 'Usuario o contraseña incorrectos'
-            })
-        else:
-            login(request, user)
-            return redirect('home')
+    user = authenticate(
+        request, username=request.POST["username"], password=request.POST["password"]
+    )
 
+    if user is None:
+        return render(request, "signin.html", {
+            "form": AuthenticationForm(),
+            "error": "Usuario o contraseña incorrectos"
+        })
+
+    login(request, user)
+
+    # Verifica si el usuario YA tiene un perfil antes de crearlo
+    if not UserProfile.objects.filter(user=user).exists():
+        try:
+            UserProfile.objects.create(user=user, email=user.email)
+        except IntegrityError:
+            pass  # Maneja el error si el perfil ya existe
+
+    return redirect("home")
 
 @login_required
 @user_passes_test(is_admin)
@@ -106,32 +99,25 @@ def user_management(request):
 
     return render(request, 'user_management.html', {'users': users, 'grupos': grupos})
 
-#? Product Logic
- 
 @login_required
-
 def products(request):
     products = Product.objects.all()
     return render(request, 'products.html', {
         'products': products
     })
 
-
 @login_required
-
 def products_added(request):
     cart_items = CartItem.objects.filter(user=request.user).select_related('product')
     return render(request, 'products_added.html', {
         'cart_items': cart_items
     })
-    
 
 @login_required
-
 def create_product(request):
     if request.method == 'GET':
         return render(request, 'create_product.html', {
-            'form': ProductForm
+            'form': ProductForm()
         })
     elif request.method == 'POST':
         try:
@@ -142,12 +128,11 @@ def create_product(request):
             return redirect('products')
         except ValueError:
             return render(request, 'create_product.html', {
-                'form': ProductForm,
+                'form': ProductForm(),
                 'error': 'Campos invalidos'
             })
 
 @login_required
-
 def product_detail(request, product_id):
     if request.method == 'GET':
         product = get_object_or_404(Product, pk=product_id)
@@ -167,7 +152,6 @@ def product_detail(request, product_id):
             })
 
 @login_required
-
 def add_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
@@ -179,7 +163,6 @@ def add_product(request, product_id):
         return render(request, 'add_product.html', {'product': product})
 
 @login_required
-
 def delete_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
@@ -187,9 +170,7 @@ def delete_product(request, product_id):
         product.delete()
         return redirect('products')
 
-
 @login_required
-
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
