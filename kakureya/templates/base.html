@@ -45,7 +45,7 @@
                             <li class="nav-item"><a class="nav-link" href="{% url 'create_product' %}">Crear producto</a></li>
                             <li><a class="nav-item"><a class="nav-link " href="{% url 'user_management' %}">Gestionar usuarios</a></li>
                         {% else %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'products_added' %}">Carrito de compras</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}">Carrito de compras</a></li>
                         {% endif %}
 
                         <li class="nav-item"><a class="nav-link text-danger" href="{% url 'logout' %}">Cerrar sesión</a></li>

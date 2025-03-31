@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'kakureya.apps.KakureyaConfig',
+    'paypal.standard.ipn',
 ]
 
 MIDDLEWARE = [
@@ -146,3 +147,7 @@ LOGIN_URL = '/signin'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# PayPal Settings
+PAYPAL_RECEIVER_EMAIL = "your-paypal-business-email@example.com"
+PAYPAL_TEST = True  # Change to False in production
