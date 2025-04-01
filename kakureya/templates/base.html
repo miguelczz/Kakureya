@@ -38,8 +38,9 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'products' %}">Productos</a></li>
+                    
                     {% if user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'products' %}">Productos</a></li>
 
                         {% if user|in_group:"Administrador" %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'create_product' %}">Crear producto</a></li>

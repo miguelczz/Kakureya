@@ -23,8 +23,12 @@
                             <a href="{% url 'product_detail' product.id %}" class="btn btn-sm btn-info">Ver detalles</a>
                         
                         {% else %}
-                            <button type="submit" class="btn btn-sm btn-dark">Agregar al carrito</button>
-                            <input type="number" name="quantity" value="1" min="1" class="form-control me-2" style="width: 80px;">
+                            {% if product.stock > 0 %}
+                                <button type="submit" class="btn btn-sm btn-dark">Agregar al carrito</button>
+                                <input type="number" name="quantity" value="1" min="1" class="form-control me-2" style="width: 80px;">
+                            {% else %}
+                                <span class="text-danger fw-bold">Agotado</span>
+                            {% endif %}
                         {% endif %}
                     </form>
                 </li>
