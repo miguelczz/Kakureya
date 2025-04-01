@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from kakureya import views
+from paypal.standard.ipn.views import ipn
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +32,14 @@ urlpatterns = [
     path('products/<int:product_id>/delete/', views.delete_product, name='delete_product'),
     path('logout/', views.signout, name='logout'),
     path('signin/', views.signin, name='signin'),
+    path('cart/', views.cart, name='cart'),
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('cart/remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('cart/summary/', views.cart_summary, name='cart_summary'),
     path('users/', views.user_management, name='user_management'),
+    path("paypal-ipn/", ipn, name="paypal-ipn"),
+    path("checkout/", views.checkout, name="checkout"),
+    path("payment/capture/", views.payment_capture, name="payment_capture"),
+    path("payment/success/<int:payment_id>/", views.payment_success, name="payment_success"),
+    path("payment/failed/<int:payment_id>/", views.payment_failed, name="payment_failed"),
 ]

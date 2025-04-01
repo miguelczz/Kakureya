@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>📦Resumen de Compras</h2>
+
+{% if cart_items %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>${{ item.product.price }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.total_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4>Total: ${{ total_price }}</h4>
+
+    <!-- Checkout Button -->
+    <a href="{% url 'checkout' %}" class="btn btn-success">Proceder al Pago</a>
+{% else %}
+    <p>Tu carrito está vacío.</p>
+{% endif %}
+
+{% endblock %}
