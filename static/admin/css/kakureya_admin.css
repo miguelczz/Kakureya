@@ -1,0 +1,77 @@
+/* Forzar modo claro */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light;
+  }
+}
+
+/* Fondo general */
+body {
+  background-color: #fff8f5 !important;
+  color: #000 !important;
+}
+
+/* Encabezado principal */
+header#header {
+  background-color: #1a1a1a !important; /* fondo negro */
+  color: #fff !important; /* texto blanco */
+}
+
+header#header a {
+  color: #ff3c38 !important; /* enlaces rojos (branding Kakureya) */
+  font-weight: bold;
+}
+
+/* Títulos de sección */
+h1,
+h2,
+h3,
+h4 {
+  color: #1a1a1a !important;
+}
+
+/* Tablas */
+table {
+  background-color: white !important;
+  border: 1px solid #ddd !important;
+}
+
+th {
+  background-color: #ff3c38 !important;
+  color: white !important;
+}
+
+/* Botones */
+input[type="submit"],
+.button.default,
+.submit-row input {
+  background-color: #1a1a1a !important;
+  color: white !important;
+  border: 1px solid #1a1a1a !important;
+}
+
+input[type="submit"]:hover,
+.button.default:hover {
+  background-color: #ff3c38 !important;
+  border-color: #ff3c38 !important;
+  color: white !important;
+}
+
+/* Filtros de la barra lateral */
+#changelist-filter {
+  background-color: #fffafa !important;
+  border-left: 1px solid #ddd !important;
+}
+
+#changelist-filter h2 {
+  color: #ff3c38 !important;
+}
+
+/* Enlaces */
+a {
+  color: #1a1a1a !important;
+}
+
+a:hover {
+  color: #ff3c38 !important;
+}
