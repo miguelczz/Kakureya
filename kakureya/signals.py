@@ -14,13 +14,9 @@ def assign_user_group(sender, instance, created, **kwargs):
             instance.groups.add(cliente_group)
 
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance, email=instance.email)
-
-@receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    instance.userprofile.save()
+    if hasattr(instance, 'userprofile'):
+        instance.userprofile.save()
 
 
 # Se agregaron nuevas señales para crear y guardar el perfil de usuario

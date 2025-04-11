@@ -11,6 +11,8 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm
 from .models import UserProfile
+from django.http import JsonResponse
+from django.urls import reverse
 
 def is_admin(user):
     return user.groups.filter(name='Administrador').exists()
@@ -19,29 +21,38 @@ def home(request):
     return render(request, 'home.html')
 
 def signup(request):
-    if request.method == 'GET':
-        return render(request, 'signup.html', {
-            'form': UserRegisterForm()
-        })
-    else:
+    if request.method == 'POST':
         form = UserRegisterForm(request.POST)
+
         if form.is_valid():
-            try:
-                user = form.save(commit=False)
-                user.save()
-                login(request, user)
-                return redirect('products')
-            except IntegrityError:
-                form.add_error(None, 'El usuario ya existe')
-                return render(request, 'signup.html', {
-                    'form': form,
-                    'error': 'El usuario ya existe'
-                })
+            email = form.cleaned_data.get('email')
+            phone = form.cleaned_data.get('phone_number')
+
+            # Validaciones personalizadas antes de crear el usuario
+            has_errors = False
+            if UserProfile.objects.filter(email=email).exists():
+                form.add_error('email', 'Este correo ya está registrado.')
+                has_errors = True
+
+            if phone and UserProfile.objects.filter(phone_number=phone).exists():
+                form.add_error('phone_number', 'Este número de celular ya está registrado.')
+                has_errors = True
+
+            if has_errors:
+                error_dict = {field: [str(e) for e in errs] for field, errs in form.errors.items()}
+                return JsonResponse({'errors': error_dict}, status=400)
+
+            # Crear usuario y perfil desde el formulario (form.save ya incluye UserProfile)
+            user = form.save()  # UserRegisterForm se encarga de guardar perfil
+            login(request, user)
+            return JsonResponse({'success': True, 'redirect': reverse('products')})
+
         else:
-            return render(request, 'signup.html', {
-                'form': form,
-                'error': 'Formulario inválido. Por favor, corrija los errores a continuación.'
-            })
+            error_dict = {field: [str(e) for e in errs] for field, errs in form.errors.items()}
+            return JsonResponse({'errors': error_dict}, status=400)
+
+    return render(request, 'signup.html', {'form': UserRegisterForm()})
+
 
 @login_required
 def signout(request):
@@ -99,7 +110,6 @@ def user_management(request):
 
     return render(request, 'user_management.html', {'users': users, 'grupos': grupos})
 
-@login_required
 def products(request):
     products = Product.objects.all()
     return render(request, 'products.html', {
