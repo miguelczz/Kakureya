@@ -51,6 +51,7 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'products' %}">Productos</a></li>
+<<<<<<< HEAD
 
                     {% if user.is_authenticated %}
                     {% if user|in_group:"Administrador" %}
@@ -63,6 +64,22 @@
                     {% else %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Registrarse</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'signin' %}">Iniciar sesión</a></li>
+=======
+                    
+                    {% if user.is_authenticated %}
+
+                        {% if user|in_group:"Administrador" %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'create_product' %}">Crear producto</a></li>
+                            <li><a class="nav-item"><a class="nav-link " href="{% url 'user_management' %}">Gestionar usuarios</a></li>
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}">Carrito de compras</a></li>
+                        {% endif %}
+
+                        <li class="nav-item"><a class="nav-link text-danger" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                        {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Registrarse</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'signin' %}">Iniciar sesión</a></li>
+>>>>>>> 8cec0dffff08049d10a65203410f44236bd6aaf7
                     {% endif %}
                 </ul>
             </div>

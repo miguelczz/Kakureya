@@ -27,7 +27,16 @@
                                 <input type="number" name="quantity" value="1" min="1" class="form-control me-2" style="width: 80px;">
                             {% endif %}
                         {% else %}
+<<<<<<< HEAD
                             <a href="{% url 'signup' %}" class="btn btn-sm btn-primary">Registrarse para comprar</a>
+=======
+                            {% if product.stock > 0 %}
+                                <button type="submit" class="btn btn-sm btn-dark">Agregar al carrito</button>
+                                <input type="number" name="quantity" value="1" min="1" class="form-control me-2" style="width: 80px;">
+                            {% else %}
+                                <span class="text-danger fw-bold">Agotado</span>
+                            {% endif %}
+>>>>>>> 8cec0dffff08049d10a65203410f44236bd6aaf7
                         {% endif %}
                     </form>
                 </li>

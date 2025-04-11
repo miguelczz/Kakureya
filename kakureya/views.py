@@ -93,7 +93,10 @@ def user_management(request):
 
     return render(request, 'user_management.html', {'users': users, 'grupos': grupos})
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8cec0dffff08049d10a65203410f44236bd6aaf7
 def products(request):
     products = Product.objects.all()
     return render(request, 'products.html', {
@@ -160,28 +163,43 @@ def delete_product(request, product_id):
         return redirect('products')
 
 # 🟢 Improved stock validation when adding products to the cart
-@login_required
 def add_to_cart(request, product_id):
     if not request.user.is_authenticated:
+<<<<<<< HEAD
         # Redirige al formulario de registro si el usuario no está autenticado
+=======
+>>>>>>> 8cec0dffff08049d10a65203410f44236bd6aaf7
         return redirect('signup')
 
     product = get_object_or_404(Product, id=product_id)
 
-    # Ensure stock availability
+    # Verificar disponibilidad de stock
     if product.stock < 1:
         messages.error(request, f"{product.name} está agotado.")
         return redirect("products")
 
-    cart_item, _ = CartItem.objects.get_or_create(user=request.user, product=product)
-    
-    if cart_item.quantity < product.stock:
-        cart_item.quantity += 1
-        cart_item.save()
-        messages.success(request, f"{product.name} añadido al carrito.")
-    else:
-        messages.warning(request, f"No hay suficiente stock de {product.name}.")
+    try:
+        quantity = int(request.POST.get("quantity", 1))
+    except ValueError:
+        quantity = 1
 
+    # No permitir cantidades menores a 1
+    quantity = max(1, quantity)
+
+    cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product)
+
+    if created:
+        cart_item.quantity = min(quantity, product.stock)
+    else:
+        # No permitir que el total supere el stock disponible
+        if cart_item.quantity + quantity <= product.stock:
+            cart_item.quantity += quantity
+        else:
+            cart_item.quantity = product.stock
+
+    cart_item.save()
+
+    messages.success(request, f"{product.name} añadido al carrito.")
     return redirect("cart")
 
 @login_required

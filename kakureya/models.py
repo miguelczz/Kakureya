@@ -10,6 +10,10 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+    class Meta:
+        verbose_name = "Perfil de usuario"
+        verbose_name_plural = "Perfiles de usuarios"
+
 class Product(models.Model):
     CATEGORY_CHOICES = [
         ("sushi", "Sushi"),
@@ -22,19 +26,20 @@ class Product(models.Model):
 
     name = models.CharField(max_length=100)
     description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    stock = models.IntegerField(default=0)
+    price = models.IntegerField()
+    stock = models.IntegerField(default=10)
     image = models.ImageField(upload_to='products', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    category = models.CharField( max_length=50, choices=CATEGORY_CHOICES, default="Sin categoría")
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default="Sin categoría")
 
     def __str__(self):
         return f"{self.name} (por {self.user.username if self.user else 'Anónimo'})"
 
-from django.db import models
-from django.contrib.auth.models import User
+    class Meta:
+        verbose_name = "Producto"
+        verbose_name_plural = "Productos"
 
 class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cart_items')
@@ -50,6 +55,8 @@ class CartItem(models.Model):
 
     class Meta:
         unique_together = ('user', 'product')  # Avoid duplicate items
+        verbose_name = "Item del carrito"
+        verbose_name_plural = "Ítems del carrito"
 
 class Payment(models.Model):
     PAYMENT_METHODS = [
@@ -61,7 +68,7 @@ class Payment(models.Model):
         ("pending", "Pending"),
         ("completed", "Completed"),
         ("failed", "Failed"),
-        ]
+    ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -69,12 +76,15 @@ class Payment(models.Model):
     transaction_id = models.CharField(max_length=100, unique=True, blank=True, null=False)
     status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default="pending")
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     def save(self, *args, **kwargs):
-        # Auto-generate a transaction ID if it's empty (useful for cash payments)
         if not self.transaction_id:
-            self.transaction_id = str(uuid.uuid4())  # Generate a unique ID
+            self.transaction_id = str(uuid.uuid4())
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Pago {self.transaction_id} - {self.status} (${self.amount})"
+
+    class Meta:
+        verbose_name = "Pago"
+        verbose_name_plural = "Pagos"
