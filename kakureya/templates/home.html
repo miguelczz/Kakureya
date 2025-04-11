@@ -1,28 +1,14 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-
-<main class="container py-5">
-    <section class="card card-body">
-        <h1 class="display-1 text-center">Kakureya</h1>
-        
-        {% if user.is_authenticated %}
-
-        <p>Desarrollo de una aplicación web en Python para la sistematización de pedidos y despachos de comida japonesa a domicilio, facilitando la gestión de órdenes y mejorando la experiencia de usuario.</p>
-
-        {% else %}
-        <div class="text-center">
-            <p>Desarrollo de una aplicación web en Python para la sistematización de pedidos y despachos de comida japonesa a domicilio, facilitando la gestión de órdenes y mejorando la experiencia de usuario.</p>
-            <a class="btn btn-secondary" href="/signin/">
-                Ingresar
-            </a>
-            <a class="btn btn-dark" href="/signup/">
-                Registrarse
-            </a>
+<div class="hero-section text-center py-5 bg-light">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Kakureya</h1>
+        <img src="{% static 'images/cover.png' %}" alt="Imagen de portada" class="img-fluid my-4">
+        <div class="mt-4">
+            <a href="{% url 'products' %}" class="btn btn-primary btn-lg">Ver Menú</a>
         </div>
-        {% endif %}
-
-        </section>
-</main>
-
+    </div>
+</div>
 {% endblock %}

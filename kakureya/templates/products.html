@@ -19,12 +19,15 @@
                     <form action="{% url 'add_to_cart' product.id %}" method="POST" class="d-flex align-items-center mt-2">
                         {% csrf_token %}
                         
-                        {% if user|in_group:"Administrador" %}
-                            <a href="{% url 'product_detail' product.id %}" class="btn btn-sm btn-info">Ver detalles</a>
-                        
+                        {% if user.is_authenticated %}
+                            {% if user|in_group:"Administrador" %}
+                                <a href="{% url 'product_detail' product.id %}" class="btn btn-sm btn-info">Ver detalles</a>
+                            {% else %}
+                                <button type="submit" class="btn btn-sm btn-dark">Agregar al carrito</button>
+                                <input type="number" name="quantity" value="1" min="1" class="form-control me-2" style="width: 80px;">
+                            {% endif %}
                         {% else %}
-                            <button type="submit" class="btn btn-sm btn-dark">Agregar al carrito</button>
-                            <input type="number" name="quantity" value="1" min="1" class="form-control me-2" style="width: 80px;">
+                            <a href="{% url 'signup' %}" class="btn btn-sm btn-primary">Registrarse para comprar</a>
                         {% endif %}
                     </form>
                 </li>

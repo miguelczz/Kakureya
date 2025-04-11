@@ -87,6 +87,67 @@
     animation: wobble2 var(--uib-speed) infinite ease-in-out;
 }
 
+.logoblanco {
+    max-height: 65px; /* Limita la altura máxima del logo */
+    width: auto; /* Mantiene la proporción de la imagen */
+    display: inline-block; /* Asegura que no afecte el flujo del contenido */
+}
+
+body {
+    font-family: 'PT Serif', sans-serif; /* Aplica la fuente a todo el cuerpo */
+}
+
+.navbar-brand {
+    font-family: 'PT Serif', sans-serif; /* Aplica la fuente solo al logo o navbar */
+}
+
+/* Estamos dependiendo de GoogleFonts para usar la letra "PT Serif" */
+
+footer {
+    background-color: #343a40; /* Color oscuro para el fondo */
+    color: #ffffff; /* Texto blanco */
+    padding: 20px 0; /* Espaciado vertical */
+}
+
+footer a {
+    color: #ffffff; /* Enlaces en blanco */
+    text-decoration: none; /* Sin subrayado */
+    font-weight: bold; /* Texto en negrita */
+}
+
+footer a:hover {
+    color: #ffc107; /* Cambia el color al pasar el mouse */
+    text-decoration: underline; /* Subrayado al pasar el mouse */
+}
+
+.hero-section {
+    background-color: #f8f9fa; /* Fondo claro */
+    padding: 100px 20px; /* Espaciado vertical */
+}
+
+.hero-section h1 {
+    font-family: 'Special Elite', sans-serif; /* Fuente personalizada */
+    color: #333; /* Color del texto */
+}
+
+.hero-section p {
+    font-size: 1.5rem; /* Tamaño del texto del eslogan */
+    color: #555; /* Color del eslogan */
+}
+
+.hero-section img {
+    max-width: 100%; /* Imagen responsiva */
+    height: auto; /* Mantiene la proporción */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+.hero-section .btn-primary {
+    background-color: #ff0000; /* Color del botón */
+    border-color: #000000;
+    font-size: 1.2rem;
+    padding: 10px 20px;
+}
+
 @keyframes spin78236 {
     0% {
         transform: rotate(0deg);

@@ -93,7 +93,7 @@ def user_management(request):
 
     return render(request, 'user_management.html', {'users': users, 'grupos': grupos})
 
-@login_required
+
 def products(request):
     products = Product.objects.all()
     return render(request, 'products.html', {
@@ -162,6 +162,10 @@ def delete_product(request, product_id):
 # 🟢 Improved stock validation when adding products to the cart
 @login_required
 def add_to_cart(request, product_id):
+    if not request.user.is_authenticated:
+        # Redirige al formulario de registro si el usuario no está autenticado
+        return redirect('signup')
+
     product = get_object_or_404(Product, id=product_id)
 
     # Ensure stock availability
