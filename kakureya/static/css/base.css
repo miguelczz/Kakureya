@@ -1,119 +1,43 @@
-/* Loader wrapper pantalla completa */
-#loader-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    /*  background-color: #0000001e; Fondo oscuro sin barra blanca */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+/* Fonts */
+@import url(../css/clash-display.css);
+
+/* Variables */
+:root {
+    --c-dark: #1A1A1D;
+    --c-brand: #a50714;
+    --c-brand-light: #c01422;
+    --c-brand-rgb: 122, 12, 21;
+    --c-body: #F2F2F2;
+    --font-base: "ClashDisplay", sans-serif;
+    --font-navbar-brand: "BigWhale", sans-serif;
+    --box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+    --transition: all 0.5s ease;
 }
 
-/* Efecto de desvanecimiento al cargar */
-#loader-wrapper.fade-out {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.1s ease-in-out, visibility 0.1s ease-in-out;
+/* Reset and helpers */
+body {
+    font-family: var(--font-base);
+    line-height: 1.7;
+    color: var(--c-body);
 }
 
-/* Loader three-body */
-.three-body {
-    --uib-size: 35px;
-    --uib-speed: 0.8s;
-    --uib-color: #560319;
-    position: relative;
-    display: inline-block;
-    height: var(--uib-size);
-    width: var(--uib-size);
-    animation: spin78236 calc(var(--uib-speed) * 2.5) infinite linear;
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-weight: 600;
 }
 
-.three-body__dot {
-    position: absolute;
-    height: 100%;
-    width: 30%;
+a {
+    text-decoration: none;
+    color: var(--c-brand);
+    transition: var(--transition);
 }
 
-.three-body__dot:after {
-    content: '';
-    position: absolute;
-    height: 0%;
-    width: 100%;
-    padding-bottom: 100%;
-    background-color: var(--uib-color);
-    border-radius: 50%;
+a:hover {
+    color: var(--c-brand-light);
 }
 
-.three-body__dot:nth-child(1) {
-    bottom: 5%;
-    left: 0;
-    transform: rotate(60deg);
-    transform-origin: 50% 85%;
+.section-padding {
+    padding-top: 140px;
+    padding-bottom: 140px;
 }
 
-.three-body__dot:nth-child(1)::after {
-    bottom: 0;
-    left: 0;
-    animation: wobble1 var(--uib-speed) infinite ease-in-out;
-    animation-delay: calc(var(--uib-speed) * -0.3);
-}
-
-.three-body__dot:nth-child(2) {
-    bottom: 5%;
-    right: 0;
-    transform: rotate(-60deg);
-    transform-origin: 50% 85%;
-}
-
-.three-body__dot:nth-child(2)::after {
-    bottom: 0;
-    left: 0;
-    animation: wobble1 var(--uib-speed) infinite
-        calc(var(--uib-speed) * -0.15) ease-in-out;
-}
-
-.three-body__dot:nth-child(3) {
-    bottom: -5%;
-    left: 0;
-    transform: translateX(116.666%);
-}
-
-.three-body__dot:nth-child(3)::after {
-    top: 0;
-    left: 0;
-    animation: wobble2 var(--uib-speed) infinite ease-in-out;
-}
-
-@keyframes spin78236 {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes wobble1 {
-    0%, 100% {
-        transform: translateY(0%) scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: translateY(-66%) scale(0.65);
-        opacity: 0.8;
-    }
-}
-
-@keyframes wobble2 {
-    0%, 100% {
-        transform: translateY(0%) scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: translateY(66%) scale(0.65);
-        opacity: 0.8;
-    }
-}
