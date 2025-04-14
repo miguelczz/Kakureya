@@ -1,28 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% load static %} {% block content %}
 
-{% block content %}
+<link rel="stylesheet" href="{% static 'talky/home.css' %}" />
 
-<main class="container py-5">
-    <section class="card card-body">
-        <h1 class="display-1 text-center">Kakureya</h1>
-        
-        {% if user.is_authenticated %}
+<!--? Main component -->
+<!--? Main component end -->
 
-        <p>Desarrollo de una aplicación web en Python para la sistematización de pedidos y despachos de comida japonesa a domicilio, facilitando la gestión de órdenes y mejorando la experiencia de usuario.</p>
 
-        {% else %}
-        <div class="text-center">
-            <p>Desarrollo de una aplicación web en Python para la sistematización de pedidos y despachos de comida japonesa a domicilio, facilitando la gestión de órdenes y mejorando la experiencia de usuario.</p>
-            <a class="btn btn-secondary" href="/signin/">
-                Ingresar
-            </a>
-            <a class="btn btn-dark" href="/signup/">
-                Registrarse
-            </a>
-        </div>
-        {% endif %}
-
-        </section>
-</main>
 
 {% endblock %}
