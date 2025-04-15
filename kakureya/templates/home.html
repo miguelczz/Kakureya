@@ -1,10 +1,153 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
 
-<link rel="stylesheet" href="{% static 'talky/home.css' %}" />
+<link rel="stylesheet" href="{% static 'css/home.css' %}" />
+<link rel="stylesheet" href="{% static 'css/hero.css' %}" />
+<link rel="stylesheet" href="{% static 'css/about.css' %}" />
+<link rel="stylesheet" href="{% static 'css/category.css' %}" />
 
-<!--? Main component -->
-<!--? Main component end -->
+<!--? Hero -->
+    <section id="hero" class="min-vh-100 d-flex align-items-center text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-uppercase fw-semibold text-white display-1">Bienvenido a Kakureya</h1>
+                    <h5 class="text-uppercase text-white mt-3 mb-4">Desarrollo de una aplicación web en Python para la sistematización de pedidos y despachos de comida japonesa a domicilio, facilitando la gestión de órdenes y mejorando la experiencia de usuario.</h5>
+                    <div>
+                        <a href="/signin/" class="btn btn-brand me-2">Ingresar</a>
+                        <a href="/signup/" class="btn btn-light ms-2">Registrarse</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
+<!--? About -->
+    <section id="about" class="section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div class="section-title">
+                        <h1 class="display-4 fw-semibold">About Kakureya</h1>
+                        <div class="line"></div>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor suscipit fugiat corporis quaerat beatae cupiditate voluptatum veritatis ab? Officia, laboriosam.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-between align-content-center">
+                <div class="col-lg-6">
+                    <img src="{% static '/images/hero1.jpg'%}" alt="Kakureya-logo" class="img-about">
+                </div>
+                <div class="col-lg-5">
+                    <h1>About Kakureya</h1>
+                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque, optio.</p>
+                    <div class="d-flex pt-4 mb-3">
+                        <div class="iconbox me-4">
+                            <i class="ri-bowl-fill"></i>
+                        </div>
+                        <div>
+                            <h5>Kakureya</h5>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente, dolorum!</p>
+                        </div>
+                    </div>
 
+                    <div class="d-flex mb-3">
+                        <div class="iconbox me-4">
+                            <i class="ri-bowl-fill"></i>
+                        </div>
+                        <div>
+                            <h5>Kakureya</h5>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente, dolorum!</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex">
+                        <div class="iconbox me-4">
+                            <i class="ri-bowl-fill"></i>
+                        </div>
+                        <div>
+                            <h5>Kakureya</h5>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente, dolorum!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!--? Categories -->
+    <section id="categories" class="section-padding border-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div class="section-title">
+                        <h1 class="display-4 fw-semibold">Categories</h1>
+                        <div class="line"></div>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor suscipit fugiat corporis quaerat beatae cupiditate voluptatum veritatis ab? Officia, laboriosam.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4 text-center">
+                <div class="col-lg-4 col-sm-6">
+                    <div class="category theme-shadow p-lg-5 p-4">
+                        <div class="iconbox">
+                            <i class="ri-stack-fill"></i>
+                        </div>
+                        <h5 class="mt-4 mb-3">Lorem, ipsum dolor.</h5>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus ut minus magnam.</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-sm-6">
+                    <div class="category theme-shadow p-lg-5 p-4">
+                        <div class="iconbox">
+                            <i class="ri-stack-fill"></i>
+                        </div>
+                        <h5 class="mt-4 mb-3">Lorem, ipsum dolor.</h5>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus ut minus magnam.</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-6">
+                    <div class="category theme-shadow p-lg-5 p-4">
+                        <div class="iconbox">
+                            <i class="ri-stack-fill"></i>
+                        </div>
+                        <h5 class="mt-4 mb-3">Lorem, ipsum dolor.</h5>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus ut minus magnam.</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-6">
+                    <div class="category theme-shadow p-lg-5 p-4">
+                        <div class="iconbox">
+                            <i class="ri-stack-fill"></i>
+                        </div>
+                        <h5 class="mt-4 mb-3">Lorem, ipsum dolor.</h5>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus ut minus magnam.</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-6">
+                    <div class="category theme-shadow p-lg-5 p-4">
+                        <div class="iconbox">
+                            <i class="ri-stack-fill"></i>
+                        </div>
+                        <h5 class="mt-4 mb-3">Lorem, ipsum dolor.</h5>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus ut minus magnam.</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-6">
+                    <div class="category theme-shadow p-lg-5 p-4">
+                        <div class="iconbox">
+                            <i class="ri-stack-fill"></i>
+                        </div>
+                        <h5 class="mt-4 mb-3">Lorem, ipsum dolor.</h5>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus ut minus magnam.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 {% endblock %}
