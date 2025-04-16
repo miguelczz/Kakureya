@@ -1,28 +1,14 @@
 /* Fonts */
 @import url(../css/clash-display.css);
 
-/* Variables */
-/* :root {
-    --c-dark: #212529;
-    --c-light: #ffffff;
-    --c-brand: #a50714;
-    --c-brand-light: #c01422;
-    --c-brand-rgb: 211, 84, 0;
-    --c-body: #727272;
-    --font-base: "ClashDisplay", sans-serif;
-    --box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
-    --transition: all 0.5s ease;
-} */
-
 :root {
     --c-dark: #1A1A1D;
-    --c-light: #ffffff;
-    --c-brand: #FF5733;
+    --c-brand:rgb(255, 87, 51);
     --c-brand-light: #db7f07;
     --c-brand-rgb: 255, 87, 51;
-    --c-body: #F5F5F5;
+    --c-body: #727272;
     --font-base: "ClashDisplay", sans-serif;
-    --font-navbar-brand: "BigWhale", sans-serif;
+    --font-brand: "BigWhale", sans-serif;
     --box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.08);
     --transition: all 0.5s ease;
 }
@@ -31,7 +17,7 @@
 body {
     font-family: var(--font-base);
     line-height: 1.7;
-    color: var(--c-dark);
+    color: var(--c-body);
 }
 
 h1, h2, h3, h4, h5, h6,
