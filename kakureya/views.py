@@ -185,6 +185,105 @@ def signin(request):
 
     return redirect("home")
 
+def password_reset_request(request):
+    if request.method == "POST":
+        email = request.POST.get('email', '').strip()
+        user = None
+        
+        # Paso 1: Buscar en UserProfile
+        try:
+            user_profile = UserProfile.objects.get(email=email)
+            user = user_profile.user
+            print(f"Usuario encontrado en UserProfile: {user.username}")
+        except UserProfile.DoesNotExist:
+            # Paso 2: Si no está en UserProfile, buscar en User
+            try:
+                user = User.objects.get(email=email)
+                print(f"Usuario encontrado en User: {user.username}")
+                
+                # Crear perfil si no existe
+                profile, created = UserProfile.objects.get_or_create(
+                    user=user,
+                    defaults={'email': user.email}
+                )
+                if created:
+                    print(f"Perfil creado automáticamente para {user.username}")
+            except User.DoesNotExist:
+                print(f"No se encontró usuario con email: {email}")
+                # Por seguridad, no revelar si el email existe
+                return render(request, "password_reset_done.html")
+        
+        # Si llegamos aquí, tenemos un usuario válido
+        # Generar token y URL para restablecer contraseña
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        reset_url = request.build_absolute_uri(f'/reset-password/{uid}/{token}/')
+        
+        print(f"URL generada: {reset_url}")
+        
+        # Enviar email con manejo de errores detallado
+        try:
+            subject = "Restablecer contraseña - Kakureya"
+            message = render_to_string('password_reset_email.html', {
+                'user': user,
+                'reset_url': reset_url,
+            })
+            
+            from_email = settings.EMAIL_HOST_USER
+            result = send_mail(
+                subject, 
+                message, 
+                from_email, 
+                [email], 
+                html_message=message,
+                fail_silently=False
+            )
+            print(f"Resultado del envío: {result}")
+            
+            return render(request, "password_reset_done.html")
+            
+        except Exception as e:
+            print(f"Error al enviar correo: {e}")
+            print(f"Tipo de error: {type(e).__name__}")
+            import traceback
+            print(traceback.format_exc())
+            
+            messages.error(request, f"Error al enviar el correo: {type(e).__name__}")
+            return render(request, "password_reset_form.html")
+    
+    return render(request, "password_reset_form.html")
+
+def password_reset_confirm(request, uidb64, token):
+    try:
+        # Decodificar el UID del usuario
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+        
+        print(f"Confirmación de restablecimiento para: {user.username}")
+        
+        # Verificar el token
+        if not default_token_generator.check_token(user, token):
+            print(f"Token inválido para el usuario: {user.username}")
+            return render(request, "password_reset_invalid.html")
+        
+        if request.method == "POST":
+            form = SetPasswordForm(user, request.POST)
+            if form.is_valid():
+                form.save()
+                print(f"Contraseña actualizada exitosamente para: {user.username}")
+                messages.success(request, "Tu contraseña ha sido actualizada correctamente.")
+                return redirect('signin')
+            else:
+                print(f"Formulario inválido: {form.errors}")
+        else:
+            form = SetPasswordForm(user)
+        
+        return render(request, "password_reset_confirm.html", {'form': form})
+    
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist) as e:
+        print(f"Error en la confirmación de restablecimiento: {e}")
+        return render(request, "password_reset_invalid.html")
+
 @login_required
 @user_passes_test(is_admin)
 def user_management(request):
