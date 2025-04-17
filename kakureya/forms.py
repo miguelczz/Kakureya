@@ -28,9 +28,4 @@ class UserRegisterForm(UserCreationForm):
         user.email = self.cleaned_data['email']
         if commit:
             user.save()
-            UserProfile.objects.create(
-                user=user,
-                email=self.cleaned_data['email'],
-                phone_number=self.cleaned_data['phone_number']
-            )
         return user

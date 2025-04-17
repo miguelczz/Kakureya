@@ -2,6 +2,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User, Group
 from .models import UserProfile
+from django.core.exceptions import ObjectDoesNotExist
 
 @receiver(post_save, sender=User)
 def assign_user_group(sender, instance, created, **kwargs):
@@ -18,6 +19,14 @@ def save_user_profile(sender, instance, **kwargs):
     if hasattr(instance, 'userprofile'):
         instance.userprofile.save()
 
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        try:
+            instance.userprofile  # intenta acceder al perfil
+        except ObjectDoesNotExist:
+            UserProfile.objects.create(user=instance, email=instance.email)
+            print(f"Perfil creado automáticamente para {instance.username}")
 
 # Se agregaron nuevas señales para crear y guardar el perfil de usuario
 # y asignar el grupo correspondiente al usuario creado.
