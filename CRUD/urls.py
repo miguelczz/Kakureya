@@ -33,4 +33,6 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('users/', views.user_management, name='user_management'),
+    path('password-reset/', views.password_reset_request, name='password_reset'),
+    path('reset-password/<uidb64>/<token>/', views.password_reset_confirm, name='password_reset_confirm'),
 ]
