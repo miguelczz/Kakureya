@@ -148,7 +148,6 @@ LOGIN_URL = '/signin'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email settings
-# Cambia esta línea
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # O tu servidor SMTP preferido
 EMAIL_PORT = 587
