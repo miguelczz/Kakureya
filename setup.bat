@@ -35,6 +35,10 @@ if exist .env (
 ) else (
     echo Creando archivo .env...
     echo DATABASE_URL=postgresql://postgres:contraseña@localhost/kakureya > .env
+    echo EMAIL_USER=usuario@gmail.com > .env
+    echo EMAIL_PASSWORD=contraseña > .env
+    
+
     echo Archivo .env creado con éxito.
 )
 
