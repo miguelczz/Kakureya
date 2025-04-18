@@ -20,26 +20,26 @@ echo Instalando dependencias...
 if exist requirements.txt (
     pip install -r requirements.txt
 ) else (
-    echo El archivo requirements.txt no existe. Instalación cancelada.
+    echo El archivo requirements.txt no existe. Instalacion cancelada.
     exit /b 1
 )
 
 :: Crear el archivo .env si no existe
 echo.
-echo =====================================
+echo =========================================
 echo = Configuracion de variables de entorno =
-echo =====================================
+echo =========================================
 
 if exist .env (
-    echo El archivo .env ya existe. No se modificará.
+    echo El archivo .env ya existe. No se modificara.
 ) else (
     echo Creando archivo .env...
     echo DATABASE_URL=postgresql://postgres:contraseña@localhost/kakureya > .env
-    echo EMAIL_USER=usuario@gmail.com > .env
-    echo EMAIL_PASSWORD=contraseña > .env
+    echo EMAIL_USER=usuario@gmail.com >> .env
+    echo EMAIL_PASSWORD=contraseña >> .env
     
 
-    echo Archivo .env creado con éxito.
+    echo Archivo .env creado con exito.
 )
 
 echo ====================================
