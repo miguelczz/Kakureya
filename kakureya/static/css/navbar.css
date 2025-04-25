@@ -38,7 +38,9 @@
     font-size: 14px;
     text-transform: uppercase;
     border-radius: 0;
+    transition: 0.2s ease-in-out;
     padding: 10px 24px;
+    border-radius: 3px;
 }
 
 .btn-brand {
@@ -51,4 +53,17 @@
     background-color: var(--c-brand-light);
     border-color: var(--c-brand-light);
     color: white;
+}
+
+.cart-btn {
+    width: 50px;
+    height: 40px;
+    padding: 0;
+    font-size: 20px;
+    border-radius: 2px;
+}
+
+.cart-btn i {
+    margin: 0 auto;
+    font-size: 20px;
 }

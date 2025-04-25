@@ -29,6 +29,7 @@
 }
 
 .img-about {
-    width: 500px;
-    height: 600px;
+    max-width: 100%;
+    height: auto;
+    display: block;
 }

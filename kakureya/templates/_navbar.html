@@ -5,7 +5,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand me-2" href="/">
             Kakureya
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -14,26 +14,40 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
-                <li class="nav-item"><a class="nav-link" href="#categories">Productos</a></li>
-                
+            <ul class="navbar-nav me-auto">
                 {% if user.is_authenticated %}
-
                     {% if user|in_group:"Administrador" %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'create_product' %}">Crear producto</a></li>
-                        <li><a class="nav-item"><a class="nav-link " href="{% url 'user_management' %}">Gestionar usuarios</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'user_management' %}">Gestionar usuarios</a></li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'products_added' %}">Carrito de compras</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/#about">Acerca de</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/#categories">Productos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/#reviews">Reseñas</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/#contact">Contacto</a></li>
                     {% endif %}
-
-                    <li class="nav-item"><a class="nav-link text-danger" href="{% url 'logout' %}">Cerrar sesión</a></li>
-                    {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Registrarse</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'signin' %}">Iniciar sesión</a></li>
                 {% endif %}
             </ul>
-            <a href="#" class="btn btn-brand ms-lg-3">Download</a>
+        
+            <ul class="navbar-nav ms-auto align-items-center gap-2">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light btn-nav d-flex align-items-center justify-content-center cart-btn" href="{% url 'products_added' %}">
+                            <i class="cart ri-shopping-cart-2-line"></i>
+                            <!-- Carrito -->
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-brand btn-nav" href="{% url 'logout' %}">Cerrar sesión</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light btn-nav" href="{% url 'signup' %}">Registrarse</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-brand btn-nav" href="{% url 'signin' %}">Iniciar sesión</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
     </div>
 </nav>

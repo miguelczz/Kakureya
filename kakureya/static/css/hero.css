@@ -2,4 +2,5 @@
     background: linear-gradient(rgba(var(--c-brand-rgb), 0.507), rgba(var(--c-brand-rgb), 0.438), #000), url('../images/hero.jpg');
     background-position: center;
     background-size: cover;
+    height: 80vh;
 }
