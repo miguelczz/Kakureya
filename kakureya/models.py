@@ -16,6 +16,7 @@ class Product(models.Model):
         ("yakitori", "Yakitori"),
         ("donburi", "Donburi"),
         ("postres", "Postres"),
+        ("bebidas", "Bebidas"),
     ]
 
     name = models.CharField(max_length=100)

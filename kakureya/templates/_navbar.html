@@ -20,8 +20,8 @@
                         <li class="nav-item"><a class="nav-link" href="{% url 'create_product' %}">Crear producto</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'user_management' %}">Gestionar usuarios</a></li>
                     {% else %}
+                    <li class="nav-item"><a class="nav-link" href="/#categories">Productos</a></li>
                         <li class="nav-item"><a class="nav-link" href="/#about">Acerca de</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/#categories">Productos</a></li>
                         <li class="nav-item"><a class="nav-link" href="/#reviews">Reseñas</a></li>
                         <li class="nav-item"><a class="nav-link" href="/#contact">Contacto</a></li>
                     {% endif %}
