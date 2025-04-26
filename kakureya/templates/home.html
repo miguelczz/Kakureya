@@ -59,25 +59,21 @@
             </div>
         </div>
         <div class="row g-4 text-center">
-            <div
-                class="col-lg-4 col-sm-6"
-                data-aos="fade-down"
-                data-aos-delay="150">
-                <div class="category theme-shadow p-lg-5 p-4">
+            <div class="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="150">
+                <a href="{% url 'products' %}?categoria=Sushi" class="category theme-shadow p-lg-5 p-4">
                     <div class="imagebox">
                         <img src="{% static 'images/categories/sushi.png' %}" alt="Sushi" class="category-img">
                     </div>
                     <h5 class="mt-4 mb-3">Sushi</h5>
-                    <p>
-                        Selección artesanal de sushi con rollos, makis elaborados con arroz, pescado fresco y vegetales. 
-                </div>
+                    <p>Selección artesanal de sushi con rollos, makis elaborados con arroz, pescado fresco y vegetales.</p>
+                </a>
             </div>
 
             <div
                 class="col-lg-4 col-sm-6"
                 data-aos="fade-down"
                 data-aos-delay="250">
-                <div class="category theme-shadow p-lg-5 p-4">
+                <a href="{% url 'products' %}?categoria=Ramen" class="category theme-shadow p-lg-5 p-4">
                     <div class="imagebox">
                         <img src="{% static 'images/categories/ramen.jpg' %}" alt="Ramen" class="category-img">
                     </div>
@@ -85,14 +81,14 @@
                     <p>
                         Ramen japonés con fideos, caldo profundo, cerdo tierno, huevo cocido, cebollín y alga nori.
                     </p>
-                </div>
+                </a>
             </div>
 
             <div
                 class="col-lg-4 col-sm-6"
                 data-aos="fade-down"
                 data-aos-delay="350">
-                <div class="category theme-shadow p-lg-5 p-4">
+                <a href="{% url 'products' %}?categoria=Yakitori" class="category theme-shadow p-lg-5 p-4">
                     <div class="imagebox">
                         <img src="{% static 'images/categories/yakitori.png' %}" alt="Yakitori" class="category-img">
                     </div>
@@ -100,14 +96,14 @@
                     <p>
                         Brochetas japonesas con pollo jugoso, vegetales asados, salsa teriyaki, cebollín fresco y ajonjolí.
                     </p>
-                </div>
+                </a>
             </div>
 
             <div
                 class="col-lg-4 col-sm-6"
                 data-aos="fade-down"
                 data-aos-delay="450">
-                <div class="category theme-shadow p-lg-5 p-4">
+                <a href="{% url 'products' %}?categoria=Donburi" class="category theme-shadow p-lg-5 p-4">
                     <div class="imagebox">
                         <img src="{% static 'images/categories/donburi.jpeg' %}" alt="Donburi" class="category-img">
                     </div>
@@ -115,14 +111,14 @@
                     <p>
                         Tazón japonés de arroz con pollo empanizado, salsa dulce, ajonjolí y cebollín fresco.
                     </p>
-                </div>
+                </a>
             </div>
 
             <div
                 class="col-lg-4 col-sm-6"
                 data-aos="fade-down"
                 data-aos-delay="550">
-                <div class="category theme-shadow p-lg-5 p-4">
+                <a href="{% url 'products' %}?categoria=Postres" class="category theme-shadow p-lg-5 p-4">
                     <div class="imagebox">
                         <img src="{% static 'images/categories/postre.jpeg' %}" alt="Postres" class="category-img">
                     </div>
@@ -130,14 +126,14 @@
                     <p>
                         Dulces japoneses tradicionales como Taiyaki, y mochi, suaves, rellenos y con sabores únicos.
                     </p>
-                </div>
+                </a>
             </div>
 
             <div
                 class="col-lg-4 col-sm-6"
                 data-aos="fade-down"
                 data-aos-delay="650">
-                <div class="category theme-shadow p-lg-5 p-4">
+                <a href="{% url 'products' %}?categoria=Bebidas" class="category theme-shadow p-lg-5 p-4">
                     <div class="imagebox">
                         <img src="{% static 'images/categories/bebidas.jpg' %}" alt="Bebidas" class="category-img">
                     </div>
@@ -145,7 +141,22 @@
                     <p>
                         Tés fríos, sodas japonesas y bebidas únicas que refrescan y acompañan cada bocado.
                     </p>
-                </div>
+                </a>
+            </div>
+
+            <div
+                class="col-lg-4 col-sm-6"
+                data-aos="fade-down"
+                data-aos-delay="650">
+                <a href="{% url 'products' %}" class="category theme-shadow p-lg-5 p-4">
+                    <div class="imagebox">
+                        <img src="{% static 'images/categories/general.jpg' %}" alt="Bebidas" class="category-img">
+                    </div>
+                    <h5 class="mt-4 mb-3">Todos los productos</h5>
+                    <p>
+                        Conoce todas nuestras categorías y productos disponibles en la tienda.
+                    </p>
+                </a>
             </div>
         </div>
     </div>
@@ -176,9 +187,9 @@
                     class="img-about" />
             </div>
             <div class="col-lg-5" data-aos="fade-down" data-aos-delay="150">
-                <h1>Nuestra receta: tradición, sabor y tecnología</h1>
+                <h1>Gastronomía Secreta</h1>
                 <p>
-                    Kakureya es más que comida japonesa. Somos una experiencia digital hecha para antojar y sorprender.
+                    Más que comida japonesa. Somos una experiencia digital hecha para antojar y sorprender.
                 </p>
                 <div class="d-flex pt-4 mb-3">
                     <div class="iconbox me-4">

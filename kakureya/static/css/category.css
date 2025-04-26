@@ -7,6 +7,13 @@
     overflow: hidden;
     cursor: pointer;
     z-index: 2;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.category:hover {
+    color: inherit;
 }
 
 .category::after {

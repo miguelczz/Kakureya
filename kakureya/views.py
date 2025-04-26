@@ -309,9 +309,14 @@ def user_management(request):
     return render(request, 'user_management.html', {'users': users, 'grupos': grupos})
 
 def products(request):
-    products = Product.objects.all()
+    categoria = request.GET.get('categoria')
+    if categoria:
+        products = Product.objects.filter(category__iexact=categoria)
+    else:
+        products = Product.objects.all()
     return render(request, 'products.html', {
-        'products': products
+        'products': products,
+        'categoria_seleccionada': categoria
     })
 
 @login_required

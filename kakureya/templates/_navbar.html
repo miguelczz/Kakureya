@@ -19,6 +19,7 @@
                     {% if user|in_group:"Administrador" %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'create_product' %}">Crear producto</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'user_management' %}">Gestionar usuarios</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'products' %}">Productos</a></li>
                     {% else %}
                     <li class="nav-item"><a class="nav-link" href="/#categories">Productos</a></li>
                         <li class="nav-item"><a class="nav-link" href="/#about">Acerca de</a></li>
@@ -33,7 +34,6 @@
                     <li class="nav-item">
                         <a class="btn btn-outline-light btn-nav d-flex align-items-center justify-content-center cart-btn" href="{% url 'products_added' %}">
                             <i class="cart ri-shopping-cart-2-line"></i>
-                            <!-- Carrito -->
                         </a>
                     </li>
                     <li class="nav-item">
