@@ -333,16 +333,16 @@ def create_product(request):
             'form': ProductForm()
         })
     elif request.method == 'POST':
-        try:
-            form = ProductForm(request.POST)
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
             new_product = form.save(commit=False)
             new_product.user = request.user
             new_product.save()
             return redirect('products')
-        except ValueError:
+        else:
             return render(request, 'create_product.html', {
-                'form': ProductForm(),
-                'error': 'Campos invalidos'
+                'form': form,
+                'error': 'Existen campos inválidos, por favor verifique.'
             })
 
 @login_required
@@ -390,6 +390,7 @@ def add_to_cart(request, product_id):
     if request.method == 'POST':
         try:
             quantity = int(request.POST.get('quantity', 1))
+            categoria = request.POST.get('categoria')
             if quantity < 1:
                 quantity = 1
         except ValueError:
@@ -407,4 +408,7 @@ def add_to_cart(request, product_id):
 
     messages.success(request, f'Se agregaron {quantity} unidades de "{product.name}" al carrito.')
 
-    return redirect('products')
+    if categoria:
+        return redirect(f'/products/?categoria={categoria}')
+    else:
+        return redirect('products')

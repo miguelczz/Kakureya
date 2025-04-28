@@ -21,11 +21,6 @@
                     <button type="submit" class="btn btn-success">Actualizar</button>
                 </form>
 
-                <!-- Botón Eliminar en su propio formulario -->
-                <form action="{% url 'delete_product' product.id %}" method="POST" onsubmit="return confirm('¿Estás seguro que deseas eliminar este producto?')">
-                    {% csrf_token %}
-                    <button class="btn btn-danger">Eliminar</button>
-                </form>
             </div>
             {% endif %}
         </div>
