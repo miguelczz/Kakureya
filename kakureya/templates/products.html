@@ -45,7 +45,9 @@
                             {% endif %}
                         </div>
                         <div class="col-md-6 ps-md-4 text-center text-md-start">
-                            <h5 class="fw-bold text-success mb-3">$ {{ product.price|floatformat:0 }}</h5>
+                            <h5 class="fw-bold text-success mb-3">
+                                $ <span id="totalPrice{{ product.id }}">{{ product.price|floatformat:0 }}</span>
+                            </h5>
                             <p>{{ product.description }}</p>
 
                             {% if user|in_group:"Administrador" %}
@@ -58,17 +60,40 @@
                                     </form>
                                 </div>
                             {% else %}
-                                <form action="{% url 'add_to_cart' product.id %}" method="POST" class="d-flex justify-content-center justify-content-md-start align-items-center mt-4 flex-wrap">
-                                    {% csrf_token %}
-                                    {% if categoria_seleccionada %}
-                                        <input type="hidden" name="categoria" value="{{ categoria_seleccionada }}">
-                                    {% endif %}
-                                    <button type="button" class="btn btn-outline-secondary" onclick="decreaseQuantity(this)">-</button>
-                                    <input type="number" name="quantity" id="quantity{{ product.id }}" value="1" min="1" class="form-control mx-2 my-2" style="width: 70px;">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="increaseQuantity(this)">+</button>
-                    
-                                    <button type="submit" class="btn btn-success ms-md-3 mt-2 mt-md-0">Agregar</button>
-                                </form>
+                            <form action="{% url 'add_to_cart' product.id %}" method="POST" class="d-flex justify-content-center justify-content-md-start align-items-center mt-4 flex-wrap">
+                                {% csrf_token %}
+                            
+                                {% if categoria_seleccionada %}
+                                <input type="hidden" name="categoria" value="{{ categoria_seleccionada }}">
+                                {% endif %}
+                            
+                                <button type="button" class="btn btn-outline-secondary" onclick="decreaseQuantity(this)" data-productid="{{ product.id }}" data-price="{{ product.price }}">-</button>
+                            
+                                <input type="number"
+                                       name="quantity"
+                                       id="quantity{{ product.id }}"
+                                       value="1"
+                                       min="1"
+                                       max="15"
+                                       class="form-control mx-2 text-center no-spinner"
+                                       style="width: 70px;"
+                                       data-productid="{{ product.id }}"
+                                       data-price="{{ product.price }}"
+                                       readonly>
+                            
+                                <button type="button" class="btn btn-outline-secondary" onclick="increaseQuantity(this)" data-productid="{{ product.id }}" data-price="{{ product.price }}">+</button>
+                            
+                                <div class="d-flex flex-wrap mt-3">
+                                    <button type="submit" name="action" value="add" class="btn btn-outline-success me-2 mb-2">
+                                        Agregar
+                                    </button>
+                                    
+                                    <button type="submit" name="action" value="add_and_pay" class="btn btn-success mb-2">
+                                        Ir a pagar
+                                    </button>
+                                </div>
+                            </form>
+                            
                             {% endif %}
                         </div>
                     </div>
@@ -81,17 +106,39 @@
 </main>
 
 <script>
-function increaseQuantity(productId) {
-    const qtyInput = document.getElementById('quantity' + productId);
-    qtyInput.value = parseInt(qtyInput.value) + 1;
-}
+function increaseQuantity(button) {
+    const productId = button.dataset.productid;
+    const price = parseFloat(button.dataset.price);
+    const input = document.getElementById('quantity' + productId);
 
-function decreaseQuantity(productId) {
-    const qtyInput = document.getElementById('quantity' + productId);
-    if (parseInt(qtyInput.value) > 1) {
-        qtyInput.value = parseInt(qtyInput.value) - 1;
+    let currentValue = parseInt(input.value) || 1;
+    if (currentValue < 15) {
+        input.value = currentValue + 1;
+        updateTotal(input);
     }
 }
+
+function decreaseQuantity(button) {
+    const productId = button.dataset.productid;
+    const price = parseFloat(button.dataset.price);
+    const input = document.getElementById('quantity' + productId);
+
+    let currentValue = parseInt(input.value) || 1;
+    if (currentValue > 1) {
+        input.value = currentValue - 1;
+        updateTotal(input);
+    }
+}
+
+function updateTotal(input) {
+    const productId = input.dataset.productid;
+    const price = parseFloat(input.dataset.price);
+    const quantity = parseInt(input.value) || 1;
+
+    const total = price * quantity;
+    document.getElementById('totalPrice' + productId).textContent = total.toLocaleString('es-CO');
+}
 </script>
+    
 
 {% endblock %}

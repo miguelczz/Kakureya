@@ -354,7 +354,7 @@ def product_detail(request, product_id):
     else:
         try:
             product = get_object_or_404(Product, pk=product_id)
-            form = ProductForm(request.POST, instance=product)
+            form = ProductForm(request.POST, request.FILES, instance=product)
             form.save()
             return redirect('products')
         except ValueError:
@@ -382,7 +382,7 @@ def delete_product(request, product_id):
     if request.method == 'POST':
         product.delete()
         return redirect('products')
-
+    
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -390,25 +390,33 @@ def add_to_cart(request, product_id):
     if request.method == 'POST':
         try:
             quantity = int(request.POST.get('quantity', 1))
-            categoria = request.POST.get('categoria')
             if quantity < 1:
                 quantity = 1
         except ValueError:
             quantity = 1
-    else:
-        quantity = 1
 
-    cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product)
+        action = request.POST.get('action')
+        categoria = request.POST.get('categoria')
 
-    if created:
-        cart_item.quantity = quantity
-    else:
-        cart_item.quantity += quantity
-    cart_item.save()
+        cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product)
+        if created:
+            cart_item.quantity = quantity
+        else:
+            cart_item.quantity += quantity
+        cart_item.save()
 
-    messages.success(request, f'Se agregaron {quantity} unidades de "{product.name}" al carrito.')
-
-    if categoria:
-        return redirect(f'/products/?categoria={categoria}')
-    else:
+        # PRIORIDAD 1: Ir a pagar
+        if action == 'add_and_pay':
+            return redirect('products_added')  # Tu URL de carrito
+        
+        # PRIORIDAD 2: Mantener categoría si existe
+        if categoria:
+            return redirect(f'/products/?categoria={categoria}')
+        
+        # PRIORIDAD 3: Si no, ir a productos
         return redirect('products')
+    
+    # Fallback en caso de error
+    return redirect('products')
+
+    
