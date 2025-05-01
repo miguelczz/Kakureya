@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #ff5733; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; }
+        .footer { text-align: center; padding: 20px; color: #666; }
+        .btn { display: inline-block; padding: 10px 20px; background-color: #ff5733; color: white; text-decoration: none; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Actualización de tu Pedido</h1>
+        </div>
+        <div class="content">
+            <p>Hola {{ user.username }},</p>
+            <p>El estado de tu pedido #{{ sale.id }} ha sido actualizado a: <strong>{{ status }}</strong>.</p>
+            
+            {% if sale.status == 'shipping' %}
+            <p>¡Tu pedido está en camino! Pronto llegará a la dirección proporcionada.</p>
+            {% elif sale.status == 'delivered' %}
+            <p>¡Tu pedido ha sido entregado! Esperamos que disfrutes tu comida. Si tienes algún problema, no dudes en contactarnos.</p>
+            {% elif sale.status == 'canceled' %}
+            <p>Tu pedido ha sido cancelado. Si crees que esto es un error, por favor contáctanos de inmediato.</p>
+            {% endif %}
+            
+            <p>Puedes ver los detalles de tu pedido en tu cuenta.</p>
+            
+            <p>Gracias por tu compra en Kakureya.</p>
+        </div>
+        <div class="footer">
+            <p>Kakureya - Tu gastroexperiencia japonesa</p>
+            <p>© {{ now.year }} Todos los derechos reservados</p>
+        </div>
+    </div>
+</body>
+</html>

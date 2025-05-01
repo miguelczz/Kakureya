@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <i class="ri-error-warning-line" style="font-size: 5rem; color: #dc3545;"></i>
+                    </div>
+                    <h1 class="display-4">Pago No Completado</h1>
+                    <p class="lead mb-4">Hubo un problema al procesar tu pago.</p>
+                    
+                    <div class="alert alert-danger">
+                        <p class="mb-1">Estado de la transacción: {{ status }}</p>
+                        <p class="mb-0">Por favor, intenta nuevamente o contacta a soporte si el problema persiste.</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'payment' sale.id %}" class="btn btn-dark me-2">Intentar de nuevo</a>
+                        <a href="{% url 'products_added' %}" class="btn btn-outline-dark">Volver al carrito</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

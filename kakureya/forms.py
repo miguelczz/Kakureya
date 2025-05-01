@@ -29,3 +29,28 @@ class UserRegisterForm(UserCreationForm):
         if commit:
             user.save()
         return user
+    
+class CheckoutForm(forms.Form):
+    address = forms.CharField(
+        label='Dirección de entrega', 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    city = forms.CharField(
+        label='Ciudad', 
+        initial='Medellín',
+        widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True})
+    )
+    phone = forms.CharField(
+        label='Teléfono', 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    save_address = forms.BooleanField(
+        label='Guardar dirección para futuras compras', 
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+    notes = forms.CharField(
+        label='Notas adicionales para el envío', 
+        required=False,
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
+    )

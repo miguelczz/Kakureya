@@ -158,3 +158,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER', 'tu_correo@gmail.com')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD', 'tu_contraseña_de_app')
 DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_USER', 'tu_correo@gmail.com')
+
+# Configuración de Wompi
+WOMPI_PUBLIC_KEY = os.environ.get('WOMPI_PUBLIC_KEY', '')
+WOMPI_INTEGRITY_SECRET = os.environ.get('WOMPI_INTEGRITY_SECRET', '')
+WOMPI_EVENTS_SECRET = os.environ.get('WOMPI_EVENTS_SECRET', '')

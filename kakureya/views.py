@@ -20,6 +20,11 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib import messages
+import hashlib
+import uuid
+from decimal import Decimal
+from .forms import CheckoutForm
+from .models import Sale, SaleItem
 from django.conf import settings
 
 def is_admin(user):
@@ -308,6 +313,207 @@ def user_management(request):
 
     return render(request, 'user_management.html', {'users': users, 'grupos': grupos})
 
+def generate_wompi_integrity(reference, amount_in_cents, currency="COP"):
+    """
+    Genera el hash SHA256 para la integridad de Wompi.
+    
+    Args:
+        reference (str): Referencia única de la transacción
+        amount_in_cents (int): Monto en centavos (sin puntos ni comas)
+        currency (str): Moneda, por defecto COP
+        
+    Returns:
+        str: Hash SHA256 hexadecimal para usar como signature:integrity
+    """
+    # Obtener el secreto de integridad desde settings
+    integrity_secret = settings.WOMPI_INTEGRITY_SECRET
+    
+    # Concatenar valores en el orden: "<Referencia><Monto><Moneda><SecretoIntegridad>"
+    cadena_concatenada = f"{reference}{amount_in_cents}{currency}{integrity_secret}"
+    
+    # Generar el hash SHA256 siguiendo el ejemplo de Wompi
+    m = hashlib.sha256()
+    m.update(bytes(cadena_concatenada, 'utf-8'))
+    
+    # Devolver como representación hexadecimal
+    return m.hexdigest()
+
+@login_required
+def checkout(request):
+    # Obtener items del carrito
+    cart_items = CartItem.objects.filter(user=request.user).select_related('product')
+    
+    if not cart_items:
+        messages.warning(request, 'Tu carrito está vacío')
+        return redirect('products')
+    
+    # Calcular totales
+    subtotal = sum(item.product.price * item.quantity for item in cart_items)
+    shipping_cost = Decimal('5000')  # Costo fijo de envío
+    total = subtotal + shipping_cost
+    
+    # Obtener dirección del usuario si existe
+    try:
+        profile = UserProfile.objects.get(user=request.user)
+        initial_data = {
+            'address': profile.address or '',
+            'phone': profile.phone_number or '',
+        }
+    except UserProfile.DoesNotExist:
+        initial_data = {}
+    
+    form = CheckoutForm(request.POST or None, initial=initial_data)
+    
+    if request.method == 'POST' and form.is_valid():
+        # Crear la venta pendiente
+        # Generar referencia única para Wompi
+        reference = f"KK-{request.user.id}-{int(timezone.now().timestamp())}-{uuid.uuid4().hex[:8]}"
+        
+        sale = Sale(
+            user=request.user,
+            status='preparing',
+            address=form.cleaned_data['address'],
+            notes=form.cleaned_data.get('notes', ''),
+            payment_reference=reference,
+            is_paid=False
+        )
+        sale.save()
+        
+        # Transferir items desde el carrito a la venta
+        for item in cart_items:
+            SaleItem.objects.create(
+                sale=sale,
+                product=item.product,
+                quantity=item.quantity,
+                price_at_sale=item.product.price
+            )
+        
+        # Guardar dirección del usuario si se seleccionó esa opción
+        if form.cleaned_data.get('save_address'):
+            profile, created = UserProfile.objects.get_or_create(
+                user=request.user,
+                defaults={'email': request.user.email}
+            )
+            profile.address = form.cleaned_data['address']
+            profile.phone_number = form.cleaned_data['phone']
+            profile.save()
+        
+        # Redireccionar a la vista de pago
+        return redirect('payment', sale_id=sale.id)
+    
+    return render(request, 'checkout.html', {
+        'form': form,
+        'cart_items': cart_items,
+        'subtotal': subtotal,
+        'shipping_cost': shipping_cost,
+        'total': total
+    })
+
+@login_required
+def payment(request, sale_id):
+    # Obtener la venta
+    sale = get_object_or_404(Sale, id=sale_id, user=request.user)
+    
+    # Verificar que la venta no haya sido pagada
+    if sale.is_paid:
+        messages.info(request, 'Esta venta ya ha sido pagada')
+        return redirect('order_history')
+    
+    # Calcular el total de la venta en centavos para Wompi
+    sale_items = SaleItem.objects.filter(sale=sale)
+    subtotal = sum(item.quantity * item.price_at_sale for item in sale_items)
+    shipping_cost = Decimal('5000')
+    total = subtotal + shipping_cost
+    amount_in_cents = int(total * 100)  # Convertir a centavos
+    
+    # Generar el hash de integridad para Wompi
+    integrity_hash = generate_wompi_integrity(
+        reference=sale.payment_reference,
+        amount_in_cents=amount_in_cents,
+        currency="COP"
+    )
+    
+    # Preparar datos para el widget de Wompi
+    wompi_data = {
+        'reference': sale.payment_reference,
+        'amount_in_cents': amount_in_cents,
+        'integrity_hash': integrity_hash,
+        'public_key': settings.WOMPI_PUBLIC_KEY
+    }
+    
+    return render(request, 'payment.html', {
+        'sale': sale,
+        'sale_items': sale_items,
+        'subtotal': subtotal,
+        'shipping_cost': shipping_cost,
+        'total': total,
+        'wompi_data': wompi_data
+    })
+
+@login_required
+def payment_confirmation(request):
+    """Vista para manejar la redirección después del pago con Wompi"""
+    # Obtener parámetros de la URL enviados por Wompi
+    reference = request.GET.get('reference')
+    transaction_id = request.GET.get('id')
+    status = request.GET.get('status')
+    
+    if not reference:
+        messages.error(request, "Error en la transacción: No se recibió la referencia")
+        return redirect('products')
+    
+    try:
+        # Buscar la venta correspondiente por la referencia
+        sale = Sale.objects.get(payment_reference=reference)
+        
+        # Verificar que el usuario actual sea el propietario de la venta o un administrador
+        if request.user != sale.user and not is_admin(request.user):
+            messages.warning(request, "No tienes permisos para ver esta venta")
+            return redirect('products')
+            
+        # Procesar según el estado de la transacción
+        if status == 'APPROVED':
+            if not sale.is_paid:  # Solo actualizar si aún no está marcada como pagada
+                sale.is_paid = True
+                sale.payment_id = transaction_id
+                sale.payment_method = 'wompi'
+                sale.save()
+                
+                # Actualizar inventario
+                for item in sale.items.all():
+                    product = item.product
+                    if product.stock >= item.quantity:
+                        product.stock -= item.quantity
+                        product.save()
+                
+                # Vaciar el carrito
+                CartItem.objects.filter(user=request.user).delete()
+                
+            messages.success(request, "¡Pago exitoso! Tu pedido está siendo preparado.")
+            return render(request, 'payment_success.html', {'sale': sale})
+            
+        elif status == 'DECLINED':
+            messages.error(request, "El pago fue rechazado por la entidad financiera.")
+            return render(request, 'payment_failed.html', {'sale': sale, 'status': status})
+            
+        elif status == 'VOIDED':
+            messages.error(request, "El pago fue anulado.")
+            return render(request, 'payment_failed.html', {'sale': sale, 'status': status})
+            
+        else:  # PENDING u otros estados
+            messages.warning(request, f"El pago está en estado: {status}. Te notificaremos cuando se complete.")
+            return render(request, 'payment_pending.html', {'sale': sale, 'status': status})
+            
+    except Sale.DoesNotExist:
+        messages.error(request, "Error: No se encontró la venta correspondiente")
+        return redirect('products')
+
+@login_required
+def order_history(request):
+    """Vista para mostrar el historial de pedidos del usuario"""
+    sales = Sale.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'order_history.html', {'sales': sales})
+
 def products(request):
     categoria = request.GET.get('categoria')
     if categoria:
@@ -322,9 +528,103 @@ def products(request):
 @login_required
 def products_added(request):
     cart_items = CartItem.objects.filter(user=request.user).select_related('product')
+    
+    # Calcular subtotal para cada item y el total del carrito
+    total = 0
+    for item in cart_items:
+        item.subtotal = item.product.price * item.quantity
+        total += item.subtotal
+    
     return render(request, 'products_added.html', {
-        'cart_items': cart_items
+        'cart_items': cart_items,
+        'total': total
     })
+
+@login_required
+def remove_from_cart(request, item_id): #Para eliminar un producto del carrito
+    cart_item = get_object_or_404(CartItem, id=item_id, user=request.user)
+    if request.method == 'POST':
+        cart_item.delete()
+        messages.success(request, 'Producto eliminado del carrito')
+    return redirect('products_added')
+
+@login_required
+def update_cart_quantity(request, item_id):
+    cart_item = get_object_or_404(CartItem, id=item_id, user=request.user)
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'increase':
+            cart_item.quantity += 1
+            cart_item.save()
+            messages.success(request, 'Cantidad actualizada')
+        
+        elif action == 'decrease':
+            if cart_item.quantity > 1:
+                cart_item.quantity -= 1
+                cart_item.save()
+                messages.success(request, 'Cantidad actualizada')
+            else:
+                # Si la cantidad es 1 y se intenta disminuir, eliminar el producto
+                cart_item.delete()
+                messages.success(request, 'Producto eliminado del carrito')
+    
+    return redirect('products_added')
+
+@login_required
+@user_passes_test(is_admin)
+def admin_orders(request):
+    """Vista para que los administradores gestionen los pedidos"""
+    filter_status = request.GET.get('filter', 'all')
+    
+    if filter_status == 'all':
+        sales = Sale.objects.all().order_by('-created_at')
+    else:
+        sales = Sale.objects.filter(status=filter_status).order_by('-created_at')
+    
+    return render(request, 'admin_orders.html', {
+        'sales': sales,
+        'filter': filter_status
+    })
+
+# Modificar la función update_order_status
+
+@login_required
+@user_passes_test(is_admin)
+def update_order_status(request, sale_id):
+    """Vista para actualizar el estado de un pedido"""
+    if request.method == 'POST':
+        sale = get_object_or_404(Sale, id=sale_id)
+        old_status = sale.status
+        new_status = request.POST.get('status')
+        
+        if new_status in dict(Sale.STATUS_CHOICES).keys() and old_status != new_status:
+            sale.status = new_status
+            sale.save()
+            messages.success(request, f"Estado del pedido #{sale.id} actualizado a {sale.get_status_display()}")
+            
+            # Enviar notificación por email al cliente
+            try:
+                subject = f"Actualización de tu pedido #{sale.id} en Kakureya"
+                message = render_to_string('email/order_status_update.html', {
+                    'sale': sale,
+                    'user': sale.user,
+                    'status': sale.get_status_display()
+                })
+                
+                send_mail(
+                    subject,
+                    message,
+                    settings.EMAIL_HOST_USER,
+                    [sale.user.email],
+                    html_message=message,
+                    fail_silently=True
+                )
+            except Exception as e:
+                messages.warning(request, f"No se pudo enviar la notificación por email: {str(e)}")
+        
+    return redirect('admin_orders')
 
 @login_required
 def create_product(request):
@@ -418,5 +718,3 @@ def add_to_cart(request, product_id):
     
     # Fallback en caso de error
     return redirect('products')
-
-    
