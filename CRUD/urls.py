@@ -37,6 +37,15 @@ urlpatterns = [
     path('users/', views.user_management, name='user_management'),
     path('password-reset/', views.password_reset_request, name='password_reset'),
     path('reset-password/<uidb64>/<token>/', views.password_reset_confirm, name='password_reset_confirm'),
+    path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('cart/update/<int:item_id>/', views.update_cart_quantity, name='update_cart_quantity'),
+    path('checkout/', views.checkout, name='checkout'),
+    path('payment/<int:sale_id>/', views.payment, name='payment'),
+    path('payment/confirmation/', views.payment_confirmation, name='payment_confirmation'),
+    path('order-history/', views.order_history, name='order_history'),
+    path('admin-orders/', views.admin_orders, name='admin_orders'),
+    path('update-order-status/<int:sale_id>/', views.update_order_status, name='update_order_status'),
+ 
 ]
 
 if settings.DEBUG:

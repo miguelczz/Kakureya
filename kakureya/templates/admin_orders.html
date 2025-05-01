@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="container py-5">
+    <h1 class="text-center mb-4">Gestión de Pedidos</h1>
+    
+    <div class="mb-4">
+        <div class="btn-group" role="group">
+            <a href="?filter=all" class="btn {% if filter == 'all' or not filter %}btn-dark{% else %}btn-outline-dark{% endif %}">Todos</a>
+            <a href="?filter=preparing" class="btn {% if filter == 'preparing' %}btn-dark{% else %}btn-outline-dark{% endif %}">En preparación</a>
+            <a href="?filter=shipping" class="btn {% if filter == 'shipping' %}btn-dark{% else %}btn-outline-dark{% endif %}">En camino</a>
+            <a href="?filter=delivered" class="btn {% if filter == 'delivered' %}btn-dark{% else %}btn-outline-dark{% endif %}">Entregados</a>
+            <a href="?filter=canceled" class="btn {% if filter == 'canceled' %}btn-dark{% else %}btn-outline-dark{% endif %}">Cancelados</a>
+        </div>
+    </div>
+    
+    {% if sales %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Pagado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales %}
+                <tr>
+                    <td>{{ sale.id }}</td>
+                    <td>{{ sale.user.username }}</td>
+                    <td>{{ sale.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>${{ sale.get_total|add:5000|floatformat:0 }}</td>
+                    <td>
+                        <span class="badge 
+                            {% if sale.status == 'preparing' %}bg-primary{% endif %}
+                            {% if sale.status == 'shipping' %}bg-info{% endif %}
+                            {% if sale.status == 'delivered' %}bg-success{% endif %}
+                            {% if sale.status == 'canceled' %}bg-danger{% endif %}">
+                            {{ sale.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if sale.is_paid %}
+                        <span class="badge bg-success">Sí</span>
+                        {% else %}
+                        <span class="badge bg-danger">No</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#orderModal{{ sale.id }}">
+                            Detalles
+                        </button>
+                    </td>
+                </tr>
+                
+                <!-- Modal para cada pedido -->
+                <div class="modal fade" id="orderModal{{ sale.id }}" tabindex="-1" aria-labelledby="orderModalLabel{{ sale.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="orderModalLabel{{ sale.id }}">Pedido #{{ sale.id }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <h6 class="fw-bold">Cliente:</h6>
+                                <p>{{ sale.user.username }} ({{ sale.user.email }})</p>
+                                
+                                <h6 class="fw-bold">Productos:</h6>
+                                <ul class="list-group mb-3">
+                                    {% for item in sale.items.all %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            {{ item.product.name }} x{{ item.quantity }}
+                                        </div>
+                                        <span>${{ item.price_at_sale|floatformat:0 }} c/u</span>
+                                    </li>
+                                    {% endfor %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            Envío
+                                        </div>
+                                        <span>$5000</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center fw-bold">
+                                        <div>
+                                            TOTAL
+                                        </div>
+                                        <span>${{ sale.get_total|add:5000|floatformat:0 }}</span>
+                                    </li>
+                                </ul>
+                                
+                                <h6 class="fw-bold">Dirección de entrega:</h6>
+                                <p>{{ sale.address }}</p>
+                                
+                                {% if sale.notes %}
+                                <h6 class="fw-bold">Notas adicionales:</h6>
+                                <p>{{ sale.notes }}</p>
+                                {% endif %}
+                                
+                                <h6 class="fw-bold">Cambiar estado:</h6>
+                                <form action="{% url 'update_order_status' sale.id %}" method="POST" class="d-flex gap-2">
+                                    {% csrf_token %}
+                                    <select name="status" class="form-select">
+                                        <option value="preparing" {% if sale.status == 'preparing' %}selected{% endif %}>En preparación</option>
+                                        <option value="shipping" {% if sale.status == 'shipping' %}selected{% endif %}>En camino</option>
+                                        <option value="delivered" {% if sale.status == 'delivered' %}selected{% endif %}>Entregado</option>
+                                        <option value="canceled" {% if sale.status == 'canceled' %}selected{% endif %}>Cancelado</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-dark">Actualizar</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="ri-shopping-bag-3-line" style="font-size: 4rem; color: #ccc;"></i>
+        <p class="mt-3 text-muted">No hay pedidos disponibles con los filtros seleccionados.</p>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

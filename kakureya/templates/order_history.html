@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="container py-5">
+    <h1 class="text-center mb-4">Historial de Pedidos</h1>
+    
+    {% if sales %}
+    <div class="row">
+        {% for sale in sales %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header d-flex justify-content-between align-items-center 
+                            {% if sale.is_paid %}bg-success text-white{% else %}bg-warning{% endif %}">
+                    <h5 class="mb-0">Pedido #{{ sale.id }}</h5>
+                    <span class="badge bg-light text-dark">{{ sale.created_at|date:"d/m/Y H:i" }}</span>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Estado del pedido:</h6>
+                        <span class="badge 
+                            {% if sale.status == 'preparing' %}bg-primary{% endif %}
+                            {% if sale.status == 'shipping' %}bg-info{% endif %}
+                            {% if sale.status == 'delivered' %}bg-success{% endif %}
+                            {% if sale.status == 'canceled' %}bg-danger{% endif %}">
+                            {{ sale.get_status_display }}
+                        </span>
+                        
+                        <span class="badge {% if sale.is_paid %}bg-success{% else %}bg-danger{% endif %}">
+                            {% if sale.is_paid %}Pagado{% else %}No pagado{% endif %}
+                        </span>
+                    </div>
+                    
+                    <h6 class="fw-bold">Productos:</h6>
+                    <ul class="list-group mb-3">
+                        {% for item in sale.items.all %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                {{ item.product.name }} x{{ item.quantity }}
+                            </div>
+                            <span>${{ item.price_at_sale|floatformat:0 }} c/u</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-bold">Total pagado:</span>
+                        <span class="fw-bold">${{ sale.get_total|add:5000|floatformat:0 }}</span>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <h6 class="fw-bold">Dirección de entrega:</h6>
+                        <p class="mb-0">{{ sale.address }}</p>
+                    </div>
+                    
+                    {% if sale.notes %}
+                    <div class="mt-3">
+                        <h6 class="fw-bold">Notas adicionales:</h6>
+                        <p class="mb-0">{{ sale.notes }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if not sale.is_paid %}
+                <div class="card-footer">
+                    <a href="{% url 'payment' sale.id %}" class="btn btn-warning">Completar pago</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="ri-shopping-bag-3-line" style="font-size: 4rem; color: #ccc;"></i>
+        <p class="mt-3 text-muted">Aún no has realizado ningún pedido.</p>
+        <a href="{% url 'products' %}" class="btn btn-outline-dark mt-3">Ver productos</a>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}
