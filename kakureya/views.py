@@ -1,31 +1,31 @@
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from .models import Product, CartItem
-from django.db import IntegrityError
-from django.utils import timezone
-from .forms import ProductForm, UserRegisterForm
-from django.contrib import messages
-from django.contrib.auth.models import User, Group
-from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm
-from .models import UserProfile
-from django.http import JsonResponse
-from django.urls import reverse
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
 from django.contrib.auth.forms import SetPasswordForm
+from django.views.decorators.http import require_POST
+from django.template.loader import render_to_string
+from django.contrib.auth.models import User, Group
+from .forms import ProductForm, UserRegisterForm
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from .models import Product, CartItem
+from django.http import JsonResponse
 from django.contrib import messages
+from .models import Sale, SaleItem
+from django.utils import timezone
+from django.conf import settings
+from .models import UserProfile
+from django.urls import reverse
+from .forms import CheckoutForm
+from decimal import Decimal
 import hashlib
 import uuid
-from decimal import Decimal
-from .forms import CheckoutForm
-from .models import Sale, SaleItem
-from django.conf import settings
 
 def is_admin(user):
     return user.groups.filter(name='Administrador').exists()
@@ -526,8 +526,8 @@ def products(request):
     })
 
 @login_required
-def products_added(request):
-    cart_items = CartItem.objects.filter(user=request.user).select_related('product')
+def cart(request):
+    cart_items = CartItem.objects.filter(user=request.user).select_related('product').order_by('added_at')
     
     # Calcular subtotal para cada item y el total del carrito
     total = 0
@@ -535,7 +535,7 @@ def products_added(request):
         item.subtotal = item.product.price * item.quantity
         total += item.subtotal
     
-    return render(request, 'products_added.html', {
+    return render(request, 'cart.html', {
         'cart_items': cart_items,
         'total': total
     })
@@ -546,31 +546,32 @@ def remove_from_cart(request, item_id): #Para eliminar un producto del carrito
     if request.method == 'POST':
         cart_item.delete()
         messages.success(request, 'Producto eliminado del carrito')
-    return redirect('products_added')
+    return redirect('cart')
 
+@require_POST
 @login_required
 def update_cart_quantity(request, item_id):
-    cart_item = get_object_or_404(CartItem, id=item_id, user=request.user)
-    
-    if request.method == 'POST':
-        action = request.POST.get('action')
-        
-        if action == 'increase':
-            cart_item.quantity += 1
-            cart_item.save()
-            messages.success(request, 'Cantidad actualizada')
-        
-        elif action == 'decrease':
-            if cart_item.quantity > 1:
-                cart_item.quantity -= 1
-                cart_item.save()
-                messages.success(request, 'Cantidad actualizada')
-            else:
-                # Si la cantidad es 1 y se intenta disminuir, eliminar el producto
-                cart_item.delete()
-                messages.success(request, 'Producto eliminado del carrito')
-    
-    return redirect('products_added')
+    action = request.POST.get('action')
+    item = get_object_or_404(CartItem, id=item_id, user=request.user)
+
+    if action == 'increase' and item.quantity < 15:
+        item.quantity += 1
+    elif action == 'decrease' and item.quantity > 1:
+        item.quantity -= 1
+
+    item.save()
+
+    # Recalcular subtotal de este item y total del carrito
+    subtotal = item.product.price * item.quantity
+    cart_items = CartItem.objects.filter(user=request.user).select_related('product')
+    total = sum(ci.product.price * ci.quantity for ci in cart_items)
+
+    return JsonResponse({
+        'status': 'ok',
+        'new_quantity': item.quantity,
+        'new_subtotal': f"{subtotal:,.0f}",
+        'new_total': f"{total:,.0f}"
+    })
 
 @login_required
 @user_passes_test(is_admin)
@@ -707,7 +708,7 @@ def add_to_cart(request, product_id):
 
         # PRIORIDAD 1: Ir a pagar
         if action == 'add_and_pay':
-            return redirect('products_added')  # Tu URL de carrito
+            return redirect('cart')  # Tu URL de carrito
         
         # PRIORIDAD 2: Mantener categoría si existe
         if categoria:
