@@ -10,7 +10,7 @@
     padding-bottom: 0.5rem;
     min-height: 56px;
     box-shadow: var(--box-shadow);
-    background-color: #1a1515;
+    background-color: var(--c-dark);
 }
 
 .navbar-brand {
