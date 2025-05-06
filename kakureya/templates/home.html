@@ -506,66 +506,51 @@
 <section id="contact" class="section-padding">
     <div class="container">
         <div class="row">
-            <div
-                class="col-12 text-center"
-                data-aos="fade-down"
-                data-aos-delay="150">
+            <div class="col-12 text-center" data-aos="fade-down" data-aos-delay="150">
                 <div class="section-title">
-                    <h1 class="display-4 text-white fw-semibold">
-                        Contactanos
-                    </h1>
+                    <h1 class="display-4 text-white fw-semibold">¿Preguntas o sugerencias?</h1>
                     <div class="line bg-white"></div>
                     <p class="text-white">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Dolor suscipit fugiat corporis quaerat beatae
-                        cupiditate voluptatum veritatis ab? Officia, laboriosam.
+                        Estamos aquí para ayudarte. Escríbenos y nos pondremos en contacto contigo lo antes posible. Tu opinión es clave para seguir mejorando.
                     </p>
                 </div>
             </div>
         </div>
-        <div
-            class="row justify-content-center"
-            data-aos="fade-down"
-            data-aos-delay="250">
+
+        <div class="row justify-content-center" data-aos="fade-down" data-aos-delay="250">
             <div class="col-lg-8">
-                <form
-                    action="#"
-                    class="row g-3 p-lg-5 p-4 bg-white theme-shadow">
-                    <div class="form-group col-lg-6">
-                        <input
-                            type="text"
-                            class="form-control"
-                            placeholder="Enter first name" />
+                {% if submitted %}
+                    <div class="bg-white text-center p-5 theme-shadow">
+                        <h3 class="text-success">¡Gracias por contactarnos!</h3>
+                        <p>Tu mensaje fue enviado exitosamente.</p>
+                        <a href="/#contact" class="btn btn-brand mt-3">Enviar otro mensaje</a>
                     </div>
-                    <div class="form-group col-lg-6">
-                        <input
-                            type="text"
-                            class="form-control"
-                            placeholder="Enter last name" />
-                    </div>
-                    <div class="form-group col-lg-12">
-                        <input
-                            type="email"
-                            class="form-control"
-                            placeholder="Enter Email address" />
-                    </div>
-                    <div class="form-group col-lg-12">
-                        <input
-                            type="text"
-                            class="form-control"
-                            placeholder="Enter subject" />
-                    </div>
-                    <div class="form-group col-lg-12">
-                        <textarea
-                            name="message"
-                            rows="5"
-                            class="form-control"
-                            placeholder="Enter message"></textarea>
-                    </div>
-                    <div class="form-group col-lg-12 d-grid">
-                        <button class="btn btn-brand">Enviar mensaje</button>
-                    </div>
-                </form>
+                    <script>
+                        window.onload = function() {
+                            document.getElementById("contact").scrollIntoView({ behavior: 'smooth' });
+                        }
+                    </script>
+                {% else %}
+                    <form method="post" action="#contact" class="row g-3 p-lg-5 p-4 bg-white theme-shadow">
+                        {% csrf_token %}
+                        {% if request.method == 'POST' and form.errors %}
+                            <div class="alert alert-danger w-100">
+                                <strong>Errores:</strong>
+                                {{ form.errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-group col-lg-6">{{ form.first_name }}</div>
+                        <div class="form-group col-lg-6">{{ form.last_name }}</div>
+                        <div class="form-group col-lg-12">{{ form.email }}</div>
+                        <div class="form-group col-lg-12">{{ form.subject }}</div>
+                        <div class="form-group col-lg-12">{{ form.message }}</div>
+
+                        <div class="form-group col-lg-12 d-grid">
+                            <button type="submit" class="btn btn-brand">Enviar mensaje</button>
+                        </div>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </div>

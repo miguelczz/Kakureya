@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
+from .forms import ProductForm, UserRegisterForm, CheckoutForm, ContactForm
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.tokens import default_token_generator
@@ -10,10 +11,9 @@ from django.contrib.auth.forms import SetPasswordForm
 from django.views.decorators.http import require_POST
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User, Group
-from .forms import ProductForm, UserRegisterForm
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from django.core.mail import send_mail
+from django.core.mail import send_mail, BadHeaderError
 from .models import Product, CartItem
 from django.http import JsonResponse
 from django.contrib import messages
@@ -22,16 +22,46 @@ from django.utils import timezone
 from django.conf import settings
 from .models import UserProfile
 from django.urls import reverse
-from .forms import CheckoutForm
 from decimal import Decimal
 import hashlib
+import logging
 import uuid
 
 def is_admin(user):
     return user.groups.filter(name='Administrador').exists()
 
 def home(request):
-    return render(request, 'home.html')
+    submitted = request.GET.get('submitted') == 'true'
+
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            try:
+                print("== ENVÍO DE CORREO ==")
+                print(f"De: {settings.DEFAULT_FROM_EMAIL}")
+                print(f"Para: {settings.DEFAULT_FROM_EMAIL}")
+                print(f"Asunto: {cd['subject']}")
+                print(f"Mensaje: {cd['message']}")
+                
+                send_mail(
+                    subject=cd['subject'],
+                    message=f"Mensaje de {cd['first_name']} {cd['last_name']} ({cd['email']}):\n\n{cd['message']}",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[settings.DEFAULT_FROM_EMAIL],
+                    fail_silently=False,
+                )
+                return redirect('/?submitted=true#contact')
+            except BadHeaderError:
+                print("Fallo por encabezado inválido.")
+            except Exception as e:
+                print("Error al enviar correo:", e)
+        else:
+            print("Formulario no válido")
+    else:
+        form = ContactForm()
+
+    return render(request, 'home.html', {'form': form, 'submitted': submitted})
 
 def password_reset_request(request):
     if request.method == "POST":
