@@ -1,0 +1,69 @@
+.theme-shadow {
+    box-shadow: var(--box-shadow);
+}
+
+.category {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 2;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.category:hover {
+    color: inherit;
+}
+
+.category::after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    background: rgba(var(--c-brand-rgb), 0.2);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transition: var(--transition);
+}
+
+.category:hover::after {
+    width: 100%;
+    height: 100%;
+    background: var(--c-brand);
+    z-index: -1;
+}
+
+.category h5{
+    color:var(--c-brand);
+}
+
+.category:hover h5,
+.category:hover p {
+    color:white;
+}
+
+.category:hover .iconbox {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.imagebox {
+    width: 140px;
+    height: 100px;
+    margin: 0 auto;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    background-color: #fff;
+}
+
+.category-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.category:hover .category-img {
+    transform: scale(1.1);
+}

@@ -1,0 +1,69 @@
+@font-face {
+    font-family: 'BigWhale';
+    src: url('/static/fonts/Bigwhale.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.navbar {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    min-height: 56px;
+    box-shadow: var(--box-shadow);
+    background-color: var(--c-dark);
+}
+
+.navbar-brand {
+    font-family: var(--font-brand);
+    font-size: 30px;
+    line-height: 1;  
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    color: white;
+}
+
+.navbar-nav .nav-link.active {
+    color: var(--c-brand);
+}
+
+.btn {
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+    border-radius: 0;
+    transition: 0.2s ease-in-out;
+    padding: 10px 24px;
+    border-radius: 3px;
+}
+
+.btn-brand {
+    background-color: var(--c-brand);
+    border-color: var(--c-brand);
+    color: white;
+}
+
+.btn-brand:hover {
+    background-color: var(--c-brand-light);
+    border-color: var(--c-brand-light);
+    color: white;
+}
+
+.cart-btn {
+    width: 50px;
+    height: 40px;
+    padding: 0;
+    font-size: 20px;
+    border-radius: 2px;
+}
+
+.cart-btn i {
+    margin: 0 auto;
+    font-size: 20px;
+}
