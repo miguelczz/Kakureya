@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Product, UserProfile
+from .models import Product
 
 class ProductForm(forms.ModelForm):
     class Meta:

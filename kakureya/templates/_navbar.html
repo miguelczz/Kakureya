@@ -17,11 +17,9 @@
             <ul class="navbar-nav me-auto">
                 {% if user.is_authenticated %}
                 {% if user|in_group:"Administrador" %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'create_product' %}">Crear producto</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'user_management' %}">Gestionar usuarios</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'products' %}">Productos</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'admin_orders' %}">Gestionar pedidos</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'products' %}">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'user_management' %}">Usuarios</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'admin_orders' %}">Pedidos</a></li>
                 {% else %}
                 <li class="nav-item"><a class="nav-link" href="/#categories">Productos</a></li>
                 <li class="nav-item"><a class="nav-link" href="/#about">Acerca de</a></li>
@@ -33,12 +31,15 @@
 
             <ul class="navbar-nav ms-auto align-items-center gap-2">
                 {% if user.is_authenticated %}
+                {% if user|in_group:"Cliente" %}
                 <li class="nav-item">
                     <a class="btn btn-outline-light btn-nav d-flex align-items-center justify-content-center cart-btn"
                         href="{% url 'cart' %}">
                         <i class="cart ri-shopping-cart-2-line"></i>
                     </a>
                 </li>
+                {% endif %}
+
                 <li class="nav-item">
                     <a class="btn btn-brand btn-nav" href="{% url 'logout' %}">Cerrar sesión</a>
                 </li>

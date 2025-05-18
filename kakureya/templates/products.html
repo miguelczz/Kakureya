@@ -1,99 +1,182 @@
-{% extends 'base.html' %}
-{% load group_filters %}
-{% load static %}
-{% block content %}
+{% extends 'base.html' %} {% load group_filters %} {% load static %} {% block content %}
 <link rel="stylesheet" href="{% static 'css/products.css' %}" />
 
 <main class="container py-4">
-    <h1 class="text-center display-3 pb-4">Productos</h1>
+     {% if user|in_group:"Administrador" %}
+    <div
+        class="d-flex justify-content-between align-items-center mb-4 flex-column flex-md-row">
+        <h1 class="text-center text-md-start mb-3 mb-md-0">
+            Productos
+        </h1>
+
+        <a
+            href="{% url 'create_product' %}"
+            class="btn btn-outline-dark btn-lg px-4">
+            Agregar producto
+        </a>
+    </div>
+    {% else %}
+    <h1 class="text-center pb-4">Productos</h1>
+    {% endif %}
 
     <div class="row g-4">
         {% for product in products %}
         <div class="col-12 col-md-6">
             <!-- Card de Producto -->
-            <div class="card shadow-sm h-100 d-flex flex-row align-items-center p-3" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#productModal{{ product.id }}">
-                
+            <div
+                class="card shadow-sm h-100 d-flex flex-row align-items-center p-3"
+                style="cursor: pointer"
+                data-bs-toggle="modal"
+                data-bs-target="#productModal{{ product.id }}">
                 <div class="flex-grow-1 pe-2">
                     <h5 class="card-title fw-bold mb-1">{{ product.name }}</h5>
-                    <p class="card-text small text-muted mb-1">{{ product.description|truncatewords:12 }}</p>
-                    <p class="card-text fw-bold text-success mb-0">$ {{ product.price|floatformat:0 }}</p>
+                    <p class="card-text small text-muted mb-1">
+                        {{ product.description|truncatewords:12 }}
+                    </p>
+                    <p class="card-text fw-bold text-success mb-0">
+                        $ {{ product.price|floatformat:0 }}
+                    </p>
                 </div>
 
-                <div style="width: 100px; height: 100px;">
+                <div style="width: 100px; height: 100px">
                     {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded" style="object-fit: cover; width: 100%; height: 100%;">
+                    <img
+                        src="{{ product.image.url }}"
+                        alt="{{ product.name }}"
+                        class="img-fluid rounded"
+                        style="object-fit: cover; width: 100%; height: 100%" />
                     {% else %}
-                        <img src="{% static 'images/default_product.jpg' %}" alt="Sin imagen" class="img-fluid rounded" style="object-fit: cover; width: 100%; height: 100%;">
+                    <img
+                        src="{% static 'images/default_product.jpg' %}"
+                        alt="Sin imagen"
+                        class="img-fluid rounded"
+                        style="object-fit: cover; width: 100%; height: 100%" />
                     {% endif %}
                 </div>
-
             </div>
         </div>
 
         <!-- Modal de Producto -->
-        <div class="modal fade" id="productModal{{ product.id }}" tabindex="-1" aria-labelledby="productModalLabel{{ product.id }}" aria-hidden="true">
+        <div
+            class="modal fade"
+            id="productModal{{ product.id }}"
+            tabindex="-1"
+            aria-labelledby="productModalLabel{{ product.id }}"
+            aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold" id="productModalLabel{{ product.id }}">{{ product.name }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        <h5
+                            class="modal-title fw-bold"
+                            id="productModalLabel{{ product.id }}">
+                            {{ product.name }}
+                        </h5>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Cerrar"></button>
                     </div>
-                    <div class="modal-body d-flex flex-column flex-md-row align-items-center">
+                    <div
+                        class="modal-body d-flex flex-column flex-md-row align-items-center">
                         <div class="col-md-6 text-center mb-3 mb-md-0">
                             {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid" style="max-height: 300px;">
+                            <img
+                                src="{{ product.image.url }}"
+                                alt="{{ product.name }}"
+                                class="img-fluid"
+                                style="max-height: 300px" />
                             {% endif %}
                         </div>
                         <div class="col-md-6 ps-md-4 text-center text-md-start">
                             <h5 class="fw-bold text-success mb-3">
-                                $ <span id="totalPrice{{ product.id }}">{{ product.price|floatformat:0 }}</span>
+                                $
+                                <span id="totalPrice{{ product.id }}"
+                                    >{{ product.price|floatformat:0 }}</span
+                                >
                             </h5>
                             <p>{{ product.description }}</p>
 
                             {% if user|in_group:"Administrador" %}
-                                <!-- Botones para administrador -->
-                                <div class="d-flex justify-content-center justify-content-md-start mt-4 flex-wrap">
-                                    <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary me-2 mb-2">Editar Producto</a>
-                                    <form action="{% url 'delete_product' product.id %}" method="POST">
-                                        {% csrf_token %}
-                                        <button class="btn btn-danger">Eliminar</button>
-                                    </form>
-                                </div>
+                            <!-- Botones para administrador -->
+                            <div
+                                class="d-flex justify-content-center justify-content-md-start mt-4 flex-wrap">
+                                <a
+                                    href="{% url 'product_detail' product.id %}"
+                                    class="btn btn-outline-primary me-2 mb-2"
+                                    >Editar Producto</a
+                                >
+                                <form
+                                    action="{% url 'delete_product' product.id %}"
+                                    method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn btn-danger">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
                             {% else %}
-                            <form action="{% url 'add_to_cart' product.id %}" method="POST" class="d-flex justify-content-center justify-content-md-start align-items-center mt-4 flex-wrap">
-                                {% csrf_token %}
-                            
-                                {% if categoria_seleccionada %}
-                                <input type="hidden" name="categoria" value="{{ categoria_seleccionada }}">
+                            <form
+                                action="{% url 'add_to_cart' product.id %}"
+                                method="POST"
+                                class="d-flex justify-content-center justify-content-md-start align-items-center mt-4 flex-wrap">
+                                {% csrf_token %} {% if categoria_seleccionada %}
+                                <input
+                                    type="hidden"
+                                    name="categoria"
+                                    value="{{ categoria_seleccionada }}" />
                                 {% endif %}
-                            
-                                <button type="button" class="btn btn-outline-secondary" onclick="decreaseQuantity(this)" data-productid="{{ product.id }}" data-price="{{ product.price }}">-</button>
-                            
-                                <input type="number"
-                                       name="quantity"
-                                       id="quantity{{ product.id }}"
-                                       value="1"
-                                       min="1"
-                                       max="15"
-                                       class="form-control mx-2 text-center no-spinner"
-                                       style="width: 70px;"
-                                       data-productid="{{ product.id }}"
-                                       data-price="{{ product.price }}"
-                                       readonly>
-                            
-                                <button type="button" class="btn btn-outline-secondary" onclick="increaseQuantity(this)" data-productid="{{ product.id }}" data-price="{{ product.price }}">+</button>
-                            
+
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-secondary"
+                                    onclick="decreaseQuantity(this)"
+                                    data-productid="{{ product.id }}"
+                                    data-price="{{ product.price }}">
+                                    -
+                                </button>
+
+                                <input
+                                    type="number"
+                                    name="quantity"
+                                    id="quantity{{ product.id }}"
+                                    value="1"
+                                    min="1"
+                                    max="15"
+                                    class="form-control mx-2 text-center no-spinner"
+                                    style="width: 70px"
+                                    data-productid="{{ product.id }}"
+                                    data-price="{{ product.price }}"
+                                    readonly />
+
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-secondary"
+                                    onclick="increaseQuantity(this)"
+                                    data-productid="{{ product.id }}"
+                                    data-price="{{ product.price }}">
+                                    +
+                                </button>
+
                                 <div class="d-flex flex-wrap mt-3">
-                                    <button type="submit" name="action" value="add" class="btn btn-outline-success me-2 mb-2">
+                                    <button
+                                        type="submit"
+                                        name="action"
+                                        value="add"
+                                        class="btn btn-outline-success me-2 mb-2">
                                         Agregar
                                     </button>
-                                    
-                                    <button type="submit" name="action" value="add_and_pay" class="btn btn-success mb-2">
+
+                                    <button
+                                        type="submit"
+                                        name="action"
+                                        value="add_and_pay"
+                                        class="btn btn-success mb-2">
                                         Ir a pagar
                                     </button>
                                 </div>
                             </form>
-                            
+
                             {% endif %}
                         </div>
                     </div>
@@ -106,39 +189,39 @@
 </main>
 
 <script>
-function increaseQuantity(button) {
-    const productId = button.dataset.productid;
-    const price = parseFloat(button.dataset.price);
-    const input = document.getElementById('quantity' + productId);
+    function increaseQuantity(button) {
+        const productId = button.dataset.productid;
+        const price = parseFloat(button.dataset.price);
+        const input = document.getElementById("quantity" + productId);
 
-    let currentValue = parseInt(input.value) || 1;
-    if (currentValue < 15) {
-        input.value = currentValue + 1;
-        updateTotal(input);
+        let currentValue = parseInt(input.value) || 1;
+        if (currentValue < 15) {
+            input.value = currentValue + 1;
+            updateTotal(input);
+        }
     }
-}
 
-function decreaseQuantity(button) {
-    const productId = button.dataset.productid;
-    const price = parseFloat(button.dataset.price);
-    const input = document.getElementById('quantity' + productId);
+    function decreaseQuantity(button) {
+        const productId = button.dataset.productid;
+        const price = parseFloat(button.dataset.price);
+        const input = document.getElementById("quantity" + productId);
 
-    let currentValue = parseInt(input.value) || 1;
-    if (currentValue > 1) {
-        input.value = currentValue - 1;
-        updateTotal(input);
+        let currentValue = parseInt(input.value) || 1;
+        if (currentValue > 1) {
+            input.value = currentValue - 1;
+            updateTotal(input);
+        }
     }
-}
 
-function updateTotal(input) {
-    const productId = input.dataset.productid;
-    const price = parseFloat(input.dataset.price);
-    const quantity = parseInt(input.value) || 1;
+    function updateTotal(input) {
+        const productId = input.dataset.productid;
+        const price = parseFloat(input.dataset.price);
+        const quantity = parseInt(input.value) || 1;
 
-    const total = price * quantity;
-    document.getElementById('totalPrice' + productId).textContent = total.toLocaleString('es-CO');
-}
+        const total = price * quantity;
+        document.getElementById("totalPrice" + productId).textContent =
+            total.toLocaleString("es-CO");
+    }
 </script>
-    
 
 {% endblock %}

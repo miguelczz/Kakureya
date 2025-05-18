@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <main class="container py-5">
-    <h1 class="text-center mb-4">Gestión de Pedidos</h1>
+    <h1 class="text-start mb-4">Gestión de Pedidos</h1>
     
     <div class="mb-4">
         <div class="btn-group" role="group">
@@ -104,17 +104,17 @@
                                 <h6 class="fw-bold">Cambiar estado:</h6>
                                 <form action="{% url 'update_order_status' sale.id %}" method="POST" class="d-flex gap-2">
                                     {% csrf_token %}
-                                    <select name="status" class="form-select">
+                                    <select name="status" class="form-select mb-4">
                                         <option value="preparing" {% if sale.status == 'preparing' %}selected{% endif %}>En preparación</option>
                                         <option value="shipping" {% if sale.status == 'shipping' %}selected{% endif %}>En camino</option>
                                         <option value="delivered" {% if sale.status == 'delivered' %}selected{% endif %}>Entregado</option>
                                         <option value="canceled" {% if sale.status == 'canceled' %}selected{% endif %}>Cancelado</option>
                                     </select>
-                                    <button type="submit" class="btn btn-dark">Actualizar</button>
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <button type="submit" class="btn btn-brand">Actualizar</button>
+                                        <!-- <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cerrar</button> -->
+                                    </div>
                                 </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                             </div>
                         </div>
                     </div>
