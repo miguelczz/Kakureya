@@ -45,6 +45,8 @@ urlpatterns = [
     path('order-history/', views.order_history, name='order_history'),
     path('admin-orders/', views.admin_orders, name='admin_orders'),
     path('update-order-status/<int:sale_id>/', views.update_order_status, name='update_order_status'),
+    path('add_review/', views.add_review, name='add_review'),
+    path('moderating_review/', views.review_manager, name='review_manager'),
  
 ]
 

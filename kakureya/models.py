@@ -112,3 +112,24 @@ class SaleItem(models.Model):
     class Meta:
         verbose_name = "Ítem de venta"
         verbose_name_plural = "Ítems de venta"
+        
+class Review(models.Model):
+    ESTADOS = (
+        ('pendiente', 'Pendiente'),
+        ('aprobado', 'Aprobado'),
+        ('rechazado', 'Rechazado'),
+    )
+
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=100)
+    profesion = models.CharField(max_length=100)
+    comentario = models.TextField()
+    calificacion = models.FloatField()  # Para permitir medias estrellas
+    estado = models.CharField(max_length=10, choices=ESTADOS, default='pendiente')
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    def estrellas_completas(self):
+        return int(self.calificacion)
+
+    def media_estrella(self):
+        return self.calificacion - int(self.calificacion) >= 0.5

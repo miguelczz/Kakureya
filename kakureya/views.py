@@ -1,30 +1,26 @@
+from .forms import ProductForm, UserRegisterForm, CheckoutForm, ContactForm, ReviewForm
+from .models import Sale, SaleItem, UserProfile, CartItem, User, Product, Review
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import ProductForm, UserRegisterForm, CheckoutForm, ContactForm
+from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.encoding import force_bytes, force_str
-from django.contrib.auth.forms import SetPasswordForm
 from django.views.decorators.http import require_POST
 from django.template.loader import render_to_string
-from django.contrib.auth.models import User, Group
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import User
 from django.core.mail import send_mail, BadHeaderError
-from .models import Product, CartItem
+from django.contrib.auth.models import Group
 from django.http import JsonResponse
 from django.contrib import messages
-from .models import Sale, SaleItem
 from django.utils import timezone
 from django.conf import settings
-from .models import UserProfile
 from django.urls import reverse
 from decimal import Decimal
 import hashlib
-import logging
 import uuid
 
 def is_admin(user):
@@ -32,6 +28,12 @@ def is_admin(user):
 
 def home(request):
     submitted = request.GET.get('submitted') == 'true'
+    
+    reseñas = Review.objects.filter(estado='aprobado')
+    for r in reseñas:
+        r.full_stars = int(r.calificacion)
+        r.has_half = r.calificacion % 1 >= 0.5
+        r.empty_stars = 5 - r.full_stars - (1 if r.has_half else 0)
 
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -61,7 +63,7 @@ def home(request):
     else:
         form = ContactForm()
 
-    return render(request, 'home.html', {'form': form, 'submitted': submitted})
+    return render(request, 'home.html', {'reseñas': reseñas, 'form': form, 'submitted': submitted})
 
 def password_reset_request(request):
     if request.method == "POST":
@@ -749,3 +751,27 @@ def add_to_cart(request, product_id):
     
     # Fallback en caso de error
     return redirect('products')
+
+@login_required
+def add_review(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            reseña = form.save(commit=False)
+            reseña.usuario = request.user
+            reseña.save()
+            return render(request, 'review_process.html')
+    else:
+        form = ReviewForm()
+    return render(request, 'add_review.html', {'form': form})
+
+@staff_member_required
+def review_manager(request):
+    reseñas = Review.objects.filter(estado='pendiente')
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        decision = request.POST.get('accion')
+        reseña = Review.objects.get(id=id)
+        reseña.estado = decision
+        reseña.save()
+    return render(request, 'moderating_review.html', {'reseñas': reseñas})

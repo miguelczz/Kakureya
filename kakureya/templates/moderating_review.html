@@ -1,0 +1,32 @@
+{% extends 'base.html' %} {% block content %}
+
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            {% for r in reseñas %}
+            <div class="card my-3 p-3">
+                <strong>{{ r.nombre }}</strong> - <em>{{ r.profesion }}</em>
+                <p>{{ r.comentario }}</p>
+                <p>Calificación: {{ r.calificacion }}</p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ r.id }}" />
+                    <button
+                        name="accion"
+                        value="aprobado"
+                        class="btn btn-success">
+                        Aprobar
+                    </button>
+                    <button
+                        name="accion"
+                        value="rechazado"
+                        class="btn btn-danger">
+                        Rechazar
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+{% endblock %}

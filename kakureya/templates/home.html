@@ -1,4 +1,5 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
+{% extends 'base.html' %} {% load static %} {% load group_filters %} 
+{% block content %}
 
 <link rel="stylesheet" href="{% static 'css/home.css' %}" />
 <link rel="stylesheet" href="{% static 'css/hero.css' %}" />
@@ -37,12 +38,11 @@
         </div>
     </div>
 </section>
-
+ 
 <!--? Categories -->
 <section id="categories" class="section-padding border-top">
     <div class="container">
         <div class="row">
-
             <div
                 class="col-12 text-center"
                 data-aos="fade-down"
@@ -63,23 +63,40 @@
                 class="col-lg-4 col-sm-6"
                 data-aos="fade-down"
                 data-aos-delay="150">
-                <a href="{% url 'products' %}" class="category theme-shadow p-lg-5 p-4">
+                <a
+                    href="{% url 'products' %}"
+                    class="category theme-shadow p-lg-5 p-4">
                     <div class="imagebox">
-                        <img src="{% static 'images/categories/general.jpg' %}" alt="Bebidas" class="category-img">
+                        <img
+                            src="{% static 'images/categories/general.jpg' %}"
+                            alt="Bebidas"
+                            class="category-img" />
                     </div>
                     <h5 class="mt-4 mb-3">Todos los productos</h5>
                     <p>
-                        Conoce todas nuestras categorías y productos disponibles en la tienda.
+                        Conoce todas nuestras categorías y productos disponibles
+                        en la tienda.
                     </p>
                 </a>
             </div>
-            <div class="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="150">
-                <a href="{% url 'products' %}?categoria=Sushi" class="category theme-shadow p-lg-5 p-4">
+            <div
+                class="col-lg-4 col-sm-6"
+                data-aos="fade-down"
+                data-aos-delay="150">
+                <a
+                    href="{% url 'products' %}?categoria=Sushi"
+                    class="category theme-shadow p-lg-5 p-4">
                     <div class="imagebox">
-                        <img src="{% static 'images/categories/sushi.png' %}" alt="Sushi" class="category-img">
+                        <img
+                            src="{% static 'images/categories/sushi.png' %}"
+                            alt="Sushi"
+                            class="category-img" />
                     </div>
                     <h5 class="mt-4 mb-3">Sushi</h5>
-                    <p>Selección artesanal de sushi con rollos, makis elaborados con arroz, pescado fresco y vegetales.</p>
+                    <p>
+                        Selección artesanal de sushi con rollos, makis
+                        elaborados con arroz, pescado fresco y vegetales.
+                    </p>
                 </a>
             </div>
 
@@ -87,13 +104,19 @@
                 class="col-lg-4 col-sm-6"
                 data-aos="fade-down"
                 data-aos-delay="250">
-                <a href="{% url 'products' %}?categoria=Ramen" class="category theme-shadow p-lg-5 p-4">
+                <a
+                    href="{% url 'products' %}?categoria=Ramen"
+                    class="category theme-shadow p-lg-5 p-4">
                     <div class="imagebox">
-                        <img src="{% static 'images/categories/ramen.jpg' %}" alt="Ramen" class="category-img">
+                        <img
+                            src="{% static 'images/categories/ramen.jpg' %}"
+                            alt="Ramen"
+                            class="category-img" />
                     </div>
                     <h5 class="mt-4 mb-3">Ramen</h5>
                     <p>
-                        Ramen japonés con fideos, caldo profundo, cerdo tierno, huevo cocido, cebollín y alga nori.
+                        Ramen japonés con fideos, caldo profundo, cerdo tierno,
+                        huevo cocido, cebollín y alga nori.
                     </p>
                 </a>
             </div>
@@ -102,13 +125,19 @@
                 class="col-lg-4 col-sm-6"
                 data-aos="fade-down"
                 data-aos-delay="350">
-                <a href="{% url 'products' %}?categoria=Yakitori" class="category theme-shadow p-lg-5 p-4">
+                <a
+                    href="{% url 'products' %}?categoria=Yakitori"
+                    class="category theme-shadow p-lg-5 p-4">
                     <div class="imagebox">
-                        <img src="{% static 'images/categories/yakitori.png' %}" alt="Yakitori" class="category-img">
+                        <img
+                            src="{% static 'images/categories/yakitori.png' %}"
+                            alt="Yakitori"
+                            class="category-img" />
                     </div>
                     <h5 class="mt-4 mb-3">Yakitori</h5>
                     <p>
-                        Brochetas japonesas con pollo jugoso, vegetales asados, salsa teriyaki, cebollín fresco y ajonjolí.
+                        Brochetas japonesas con pollo jugoso, vegetales asados,
+                        salsa teriyaki, cebollín fresco y ajonjolí.
                     </p>
                 </a>
             </div>
@@ -117,13 +146,19 @@
                 class="col-lg-4 col-sm-6"
                 data-aos="fade-down"
                 data-aos-delay="450">
-                <a href="{% url 'products' %}?categoria=Donburi" class="category theme-shadow p-lg-5 p-4">
+                <a
+                    href="{% url 'products' %}?categoria=Donburi"
+                    class="category theme-shadow p-lg-5 p-4">
                     <div class="imagebox">
-                        <img src="{% static 'images/categories/donburi.jpeg' %}" alt="Donburi" class="category-img">
+                        <img
+                            src="{% static 'images/categories/donburi.jpeg' %}"
+                            alt="Donburi"
+                            class="category-img" />
                     </div>
                     <h5 class="mt-4 mb-3">Donburi</h5>
                     <p>
-                        Tazón japonés de arroz con pollo empanizado, salsa dulce, ajonjolí y cebollín fresco.
+                        Tazón japonés de arroz con pollo empanizado, salsa
+                        dulce, ajonjolí y cebollín fresco.
                     </p>
                 </a>
             </div>
@@ -132,13 +167,19 @@
                 class="col-lg-4 col-sm-6"
                 data-aos="fade-down"
                 data-aos-delay="550">
-                <a href="{% url 'products' %}?categoria=Postres" class="category theme-shadow p-lg-5 p-4">
+                <a
+                    href="{% url 'products' %}?categoria=Postres"
+                    class="category theme-shadow p-lg-5 p-4">
                     <div class="imagebox">
-                        <img src="{% static 'images/categories/postre.jpeg' %}" alt="Postres" class="category-img">
+                        <img
+                            src="{% static 'images/categories/postre.jpeg' %}"
+                            alt="Postres"
+                            class="category-img" />
                     </div>
                     <h5 class="mt-4 mb-3">Postres</h5>
                     <p>
-                        Dulces japoneses tradicionales como Taiyaki, y mochi, suaves, rellenos y con sabores únicos.
+                        Dulces japoneses tradicionales como Taiyaki, y mochi,
+                        suaves, rellenos y con sabores únicos.
                     </p>
                 </a>
             </div>
@@ -147,17 +188,22 @@
                 class="col-lg-4 col-sm-6"
                 data-aos="fade-down"
                 data-aos-delay="350">
-                <a href="{% url 'products' %}?categoria=Bebidas" class="category theme-shadow p-lg-5 p-4">
+                <a
+                    href="{% url 'products' %}?categoria=Bebidas"
+                    class="category theme-shadow p-lg-5 p-4">
                     <div class="imagebox">
-                        <img src="{% static 'images/categories/bebidas.jpg' %}" alt="Bebidas" class="category-img">
+                        <img
+                            src="{% static 'images/categories/bebidas.jpg' %}"
+                            alt="Bebidas"
+                            class="category-img" />
                     </div>
                     <h5 class="mt-4 mb-3">Bebidas</h5>
                     <p>
-                        Tés fríos, sodas japonesas y bebidas únicas que refrescan y acompañan cada bocado.
+                        Tés fríos, sodas japonesas y bebidas únicas que
+                        refrescan y acompañan cada bocado.
                     </p>
                 </a>
             </div>
-
         </div>
     </div>
 </section>
@@ -174,7 +220,11 @@
                     <h1 class="display-4 fw-semibold">Acerda de Kakureya</h1>
                     <div class="line"></div>
                     <p>
-                        Kakureya es una tienda oculta de comida japonesa a domicilio en Medellín. Ofrecemos una experiencia gastronómica especializada en sushi, ramen, yakitori, donburi, postres y bebidas niponas, todo gestionado a través de una aplicación web ágil, visual e intuitiva.
+                        Kakureya es una tienda oculta de comida japonesa a
+                        domicilio en Medellín. Ofrecemos una experiencia
+                        gastronómica especializada en sushi, ramen, yakitori,
+                        donburi, postres y bebidas niponas, todo gestionado a
+                        través de una aplicación web ágil, visual e intuitiva.
                     </p>
                 </div>
             </div>
@@ -189,7 +239,8 @@
             <div class="col-lg-5" data-aos="fade-down" data-aos-delay="150">
                 <h1>Gastronomía Secreta</h1>
                 <p>
-                    Más que comida japonesa. Somos una experiencia digital hecha para antojar y sorprender.
+                    Más que comida japonesa. Somos una experiencia digital hecha
+                    para antojar y sorprender.
                 </p>
                 <div class="d-flex pt-4 mb-3">
                     <div class="iconbox me-4">
@@ -198,7 +249,9 @@
                     <div>
                         <h5>Desde Japón, directo a tu puerta</h5>
                         <p>
-                            Somos una dark kitchen japonesa que fusiona tradición, tecnología y sabores auténticos para sorprender a Medellín.
+                            Somos una dark kitchen japonesa que fusiona
+                            tradición, tecnología y sabores auténticos para
+                            sorprender a Medellín.
                         </p>
                     </div>
                 </div>
@@ -210,7 +263,8 @@
                     <div>
                         <h5>Autenticidad japonesa</h5>
                         <p>
-                            Cada plato es preparado al momento, con ingredientes frescos y recetas que respetan la esencia nipona.
+                            Cada plato es preparado al momento, con ingredientes
+                            frescos y recetas que respetan la esencia nipona.
                         </p>
                     </div>
                 </div>
@@ -222,7 +276,8 @@
                     <div>
                         <h5>Tecnología y sabor</h5>
                         <p>
-                            Nuestra plataforma permite hacer pedidos, seguir tu orden en tiempo real y ganar puntos por cada compra.
+                            Nuestra plataforma permite hacer pedidos, seguir tu
+                            orden en tiempo real y ganar puntos por cada compra.
                         </p>
                     </div>
                 </div>
@@ -233,207 +288,75 @@
 
 <!--? Reviews  -->
 <section id="reviews" class="section-padding bg-light">
-    <div class="container">
-        <div class="row">
-            <div
-                class="col-12 text-center"
-                data-aos="fade-down"
-                data-aos-delay="150">
-                <div class="section-title">
-                    <h1 class="display-4 fw-semibold">Reseñas</h1>
-                    <div class="line"></div>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Dolor suscipit fugiat corporis quaerat beatae
-                        cupiditate voluptatum veritatis ab? Officia, laboriosam.
-                    </p>
-                </div>
-            </div>
-        </div>
+  <div class="container">
 
-        <div class="row gy-5 gx-4">
-            <div
-                class="col-lg-4 col-sm-6"
-                data-aos="fade-down"
-                data-aos-delay="150">
-                <div class="review">
-                    <div class="review-head p-4 bg-white theme-shadow">
-                        <div class="text-warning">
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                        </div>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Veritatis ab maxime pariatur.
-                        </p>
-                    </div>
-                    <div class="review-person mt-4 d-flex align-items-center">
-                        <img
-                            class="img-review rounded-circle"
-                            src="{% static '/images/hero-bg.jpg' %}"
-                            alt="Hero" />
-                        <div class="ms-3">
-                            <h5>Jose Candela</h5>
-                            <small>Asistente profesional</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div
-                class="col-lg-4 col-sm-6"
-                data-aos="fade-down"
-                data-aos-delay="250">
-                <div class="review">
-                    <div class="review-head p-4 bg-white theme-shadow">
-                        <div class="text-warning">
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                        </div>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Veritatis ab maxime pariatur.
-                        </p>
-                    </div>
-                    <div class="review-person mt-4 d-flex align-items-center">
-                        <img
-                            class="img-review rounded-circle"
-                            src="{% static '/images/hero-bg.jpg' %}"
-                            alt="Hero" />
-                        <div class="ms-3">
-                            <h5>Jose Candela</h5>
-                            <small>Asistente profesional</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div
-                class="col-lg-4 col-sm-6"
-                data-aos="fade-down"
-                data-aos-delay="350">
-                <div class="review">
-                    <div class="review-head p-4 bg-white theme-shadow">
-                        <div class="text-warning">
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                        </div>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Veritatis ab maxime pariatur.
-                        </p>
-                    </div>
-                    <div class="review-person mt-4 d-flex align-items-center">
-                        <img
-                            class="img-review rounded-circle"
-                            src="{% static '/images/hero-bg.jpg' %}"
-                            alt="Hero" />
-                        <div class="ms-3">
-                            <h5>Jose Candela</h5>
-                            <small>Asistente profesional</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div
-                class="col-lg-4 col-sm-6"
-                data-aos="fade-down"
-                data-aos-delay="450">
-                <div class="review">
-                    <div class="review-head p-4 bg-white theme-shadow">
-                        <div class="text-warning">
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                        </div>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Veritatis ab maxime pariatur.
-                        </p>
-                    </div>
-                    <div class="review-person mt-4 d-flex align-items-center">
-                        <img
-                            class="img-review rounded-circle"
-                            src="{% static '/images/hero-bg.jpg' %}"
-                            alt="Hero" />
-                        <div class="ms-3">
-                            <h5>Jose Candela</h5>
-                            <small>Asistente profesional</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div
-                class="col-lg-4 col-sm-6"
-                data-aos="fade-down"
-                data-aos-delay="550">
-                <div class="review">
-                    <div class="review-head p-4 bg-white theme-shadow">
-                        <div class="text-warning">
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                        </div>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Veritatis ab maxime pariatur.
-                        </p>
-                    </div>
-                    <div class="review-person mt-4 d-flex align-items-center">
-                        <img
-                            class="img-review rounded-circle"
-                            src="{% static '/images/hero-bg.jpg' %}"
-                            alt="Hero" />
-                        <div class="ms-3">
-                            <h5>Jose Candela</h5>
-                            <small>Asistente profesional</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div
-                class="col-lg-4 col-sm-6"
-                data-aos="fade-down"
-                data-aos-delay="650">
-                <div class="review">
-                    <div class="review-head p-4 bg-white theme-shadow">
-                        <div class="text-warning">
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                            <i class="ri-star-fill"></i>
-                        </div>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Veritatis ab maxime pariatur.
-                        </p>
-                    </div>
-                    <div class="review-person mt-4 d-flex align-items-center">
-                        <img
-                            class="img-review rounded-circle"
-                            src="{% static '/images/hero-bg.jpg' %}"
-                            alt="Hero" />
-                        <div class="ms-3">
-                            <h5>Jose Candela</h5>
-                            <small>Asistente profesional</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="row">
+      <div class="col-12 text-center" data-aos="fade-down" data-aos-delay="150">
+        <div class="section-title">
+          <h1 class="display-4 fw-semibold">Reseñas</h1>
+          <div class="line"></div>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor
+            suscipit fugiat corporis quaerat beatae cupiditate voluptatum
+            veritatis ab? Officia, laboriosam.
+          </p>
         </div>
+      </div>
     </div>
+
+    {% if user.is_authenticated and user|in_group:"Cliente" %}
+      <div class="row">
+        <div class="col-12 text-center my-4">
+          <a href="{% url 'add_review' %}" class="btn btn-dark">
+            <i class="ri-edit-2-line"></i> Agregar Reseña
+          </a>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="row gy-5 gx-4">
+      {% for review in reseñas %}
+        {% if review.estado == "aprobado" %}
+          <div class="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="{{ forloop.counter0|add:1|stringformat:"d" }}50">
+            <div class="review">
+
+              <div class="review-head p-4 bg-white theme-shadow">
+                <div class="text-warning">
+                {% for _ in 0|until:review.full_stars %}
+                    <i class="ri-star-fill"></i>
+                {% endfor %}
+                {% if review.has_half %}
+                    <i class="ri-star-half-line"></i>
+                {% endif %}
+                {% for _ in 0|until:review.empty_stars %}
+                    <i class="ri-star-line"></i>
+                {% endfor %}
+                </div>
+
+                <p>{{ review.comentario }}</p>
+              </div>
+
+              <div class="review-person mt-4 d-flex align-items-center">
+                <img
+                  class="img-review rounded-circle"
+                  src="{% static 'images/default-avatar.png' %}"
+                  alt="{{ review.nombre }}"
+                />
+                <div class="ms-3">
+                  <h5>{{ review.nombre }}</h5>
+                  <small class="text-uppercase">
+                    {{ review.profesion }}
+                  </small>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+  </div>
 </section>
 
 <!--? Team  -->
@@ -506,54 +429,75 @@
 <section id="contact" class="section-padding">
     <div class="container">
         <div class="row">
-            <div class="col-12 text-center" data-aos="fade-down" data-aos-delay="150">
+            <div
+                class="col-12 text-center"
+                data-aos="fade-down"
+                data-aos-delay="150">
                 <div class="section-title">
-                    <h1 class="display-4 text-white fw-semibold">¿Preguntas o sugerencias?</h1>
+                    <h1 class="display-4 text-white fw-semibold">
+                        ¿Preguntas o sugerencias?
+                    </h1>
                     <div class="line bg-white"></div>
                     <p class="text-white">
-                        Estamos aquí para ayudarte. Escríbenos y nos pondremos en contacto contigo lo antes posible. Tu opinión es clave para seguir mejorando.
+                        Estamos aquí para ayudarte. Escríbenos y nos pondremos
+                        en contacto contigo lo antes posible. Tu opinión es
+                        clave para seguir mejorando.
                     </p>
                 </div>
             </div>
         </div>
 
-        <div class="row justify-content-center" data-aos="fade-down" data-aos-delay="250">
+        <div
+            class="row justify-content-center"
+            data-aos="fade-down"
+            data-aos-delay="250">
             <div class="col-lg-8">
                 {% if submitted %}
-                    <div class="bg-white text-center p-5 theme-shadow">
-                        <h3 class="text-success">¡Gracias por contactarnos!</h3>
-                        <p>Tu mensaje fue enviado exitosamente.</p>
-                        <a href="/#contact" class="btn btn-brand mt-3">Enviar otro mensaje</a>
-                    </div>
-                    <script>
-                        window.onload = function() {
-                            document.getElementById("contact").scrollIntoView({ behavior: 'smooth' });
-                        }
-                    </script>
+                <div class="bg-white text-center p-5 theme-shadow">
+                    <h3 class="text-success">¡Gracias por contactarnos!</h3>
+                    <p>Tu mensaje fue enviado exitosamente.</p>
+                    <a href="/#contact" class="btn btn-brand mt-3">
+                        Enviar otro mensaje
+                    </a>
+                </div>
+                <script>
+                    window.onload = function () {
+                        document
+                            .getElementById("contact")
+                            .scrollIntoView({ behavior: "smooth" });
+                    };
+                </script>
                 {% else %}
-                    <form method="post" action="#contact" class="row g-3 p-lg-5 p-4 bg-white theme-shadow">
-                        {% csrf_token %}
-                        {% if request.method == 'POST' and form.errors %}
-                            <div class="alert alert-danger w-100">
-                                <strong>Errores:</strong>
-                                {{ form.errors }}
-                            </div>
-                        {% endif %}
+                <form
+                    method="post"
+                    action="#contact"
+                    class="row g-3 p-lg-5 p-4 bg-white theme-shadow">
+                    {% csrf_token %}
 
-                        <div class="form-group col-lg-6">{{ form.first_name }}</div>
-                        <div class="form-group col-lg-6">{{ form.last_name }}</div>
-                        <div class="form-group col-lg-12">{{ form.email }}</div>
-                        <div class="form-group col-lg-12">{{ form.subject }}</div>
-                        <div class="form-group col-lg-12">{{ form.message }}</div>
+                    {% if request.method == 'POST' and form.errors %}
+                    <div class="alert alert-danger w-100">
+                        <strong>Errores:</strong>
+                        {{ form.errors }}
+                    </div>
+                    {% endif %}
 
-                        <div class="form-group col-lg-12 d-grid">
-                            <button type="submit" class="btn btn-brand">Enviar mensaje</button>
-                        </div>
-                    </form>
+                    <div class="form-group col-lg-6">{{ form.first_name }}</div>
+                    <div class="form-group col-lg-6">{{ form.last_name }}</div>
+                    <div class="form-group col-lg-12">{{ form.email }}</div>
+                    <div class="form-group col-lg-12">{{ form.subject }}</div>
+                    <div class="form-group col-lg-12">{{ form.message }}</div>
+
+                    <div class="form-group col-lg-12 d-grid">
+                        <button type="submit" class="btn btn-brand">
+                            Enviar mensaje
+                        </button>
+                    </div>
+                </form>
                 {% endif %}
             </div>
         </div>
     </div>
 </section>
+
 
 {% endblock %}
