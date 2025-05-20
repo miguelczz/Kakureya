@@ -17,7 +17,12 @@
         </div>
         <div class="content">
             <p>Hola {{ user.username }},</p>
+            
             <p>El estado de tu pedido #{{ sale.id }} ha sido actualizado a: <strong>{{ status }}</strong>.</p>
+            
+            {% if payment_updated %}
+            <p>Estado de pago: <strong>{% if sale.is_paid %}Pagado{% else %}No pagado{% endif %}</strong>.</p>
+            {% endif %}
             
             {% if sale.status == 'shipping' %}
             <p>¡Tu pedido está en camino! Pronto llegará a la dirección proporcionada.</p>

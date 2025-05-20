@@ -90,9 +90,8 @@ class ReviewForm(forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ['nombre', 'profesion', 'calificacion', 'comentario']
+        fields = ['profesion', 'calificacion', 'comentario']
         widgets = {
             'comentario': forms.Textarea(attrs={'rows': 4, 'class': 'form-control'}),
-            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'profesion': forms.TextInput(attrs={'class': 'form-control'}),
         }

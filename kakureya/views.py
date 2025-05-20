@@ -6,7 +6,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.encoding import force_bytes, force_str
 from django.views.decorators.http import require_POST
@@ -505,9 +505,17 @@ def payment_confirmation(request):
             
         # Procesar según el estado de la transacción
         if status == 'APPROVED':
-            if not sale.is_paid:  # Solo actualizar si aún no está marcada como pagada
+            # CAMBIO PRINCIPAL: Siempre vaciar el carrito si el pago fue aprobado
+            CartItem.objects.filter(user=request.user).delete()
+            
+            # MODIFICACIÓN PARA PRUEBAS: En entorno de pruebas, siempre marcar como pagado
+            # Detectar si estamos en entorno de pruebas basado en la clave pública de Wompi
+            is_test_environment = settings.WOMPI_PUBLIC_KEY.startswith('pub_test_')
+            
+            # Si es un entorno de pruebas o si el pago no está marcado como pagado aún
+            if is_test_environment or not sale.is_paid:
                 sale.is_paid = True
-                sale.payment_id = transaction_id
+                sale.payment_id = transaction_id or f'test_{int(timezone.now().timestamp())}'
                 sale.payment_method = 'wompi'
                 sale.save()
                 
@@ -518,9 +526,10 @@ def payment_confirmation(request):
                         product.stock -= item.quantity
                         product.save()
                 
-                # Vaciar el carrito
-                CartItem.objects.filter(user=request.user).delete()
-                
+                # Mostrar mensaje específico para entorno de pruebas
+                if is_test_environment:
+                    messages.info(request, "Pago simulado en entorno de pruebas. Pedido marcado como pagado.")
+            
             messages.success(request, "¡Pago exitoso! Tu pedido está siendo preparado.")
             return render(request, 'payment_success.html', {'sale': sale})
             
@@ -583,26 +592,21 @@ def remove_from_cart(request, item_id): #Para eliminar un producto del carrito
 @require_POST
 @login_required
 def update_cart_quantity(request, item_id):
-    action = request.POST.get('action')
     item = get_object_or_404(CartItem, id=item_id, user=request.user)
-
-    if action == 'increase' and item.quantity < 15:
+    action = request.POST.get("action")
+    if action == "increase":
         item.quantity += 1
-    elif action == 'decrease' and item.quantity > 1:
+    elif action == "decrease" and item.quantity > 1:
         item.quantity -= 1
-
     item.save()
 
-    # Recalcular subtotal de este item y total del carrito
-    subtotal = item.product.price * item.quantity
-    cart_items = CartItem.objects.filter(user=request.user).select_related('product')
-    total = sum(ci.product.price * ci.quantity for ci in cart_items)
+    new_subtotal = item.product.price * item.quantity
+    total = sum(i.product.price * i.quantity for i in CartItem.objects.filter(user=request.user))
 
     return JsonResponse({
-        'status': 'ok',
-        'new_quantity': item.quantity,
-        'new_subtotal': f"{subtotal:,.0f}",
-        'new_total': f"{total:,.0f}"
+        "new_quantity": item.quantity,
+        "new_subtotal": f"{new_subtotal:.0f}",
+        "new_total": f"{total:.0f}",
     })
 
 @login_required
@@ -626,16 +630,53 @@ def admin_orders(request):
 @login_required
 @user_passes_test(is_admin)
 def update_order_status(request, sale_id):
-    """Vista para actualizar el estado de un pedido"""
+    """Vista para actualizar el estado de un pedido y/o su estado de pago"""
     if request.method == 'POST':
         sale = get_object_or_404(Sale, id=sale_id)
         old_status = sale.status
         new_status = request.POST.get('status')
         
+        # Actualizar estado del pedido
         if new_status in dict(Sale.STATUS_CHOICES).keys() and old_status != new_status:
             sale.status = new_status
+            is_status_updated = True
+        else:
+            is_status_updated = False
+        
+        # Actualizar estado de pago
+        payment_status = request.POST.get('payment_status')
+        if payment_status in ['paid', 'unpaid']:
+            old_payment_status = sale.is_paid
+            new_payment_status = (payment_status == 'paid')
+            
+            if old_payment_status != new_payment_status:
+                sale.is_paid = new_payment_status
+                
+                # Si se marca como pagado, establecer un ID de pago simulado
+                if new_payment_status:
+                    if not sale.payment_id:
+                        sale.payment_id = f'admin_{int(timezone.now().timestamp())}'
+                    if not sale.payment_method:
+                        sale.payment_method = 'manual'
+                
+                is_payment_updated = True
+            else:
+                is_payment_updated = False
+        else:
+            is_payment_updated = False
+        
+        # Guardar cambios si hubo alguna actualización
+        if is_status_updated or is_payment_updated:
             sale.save()
-            messages.success(request, f"Estado del pedido #{sale.id} actualizado a {sale.get_status_display()}")
+            
+            # Notificaciones para cada tipo de cambio
+            updates = []
+            if is_status_updated:
+                updates.append(f"estado a '{sale.get_status_display()}'")
+            if is_payment_updated:
+                updates.append(f"estado de pago a '{'Pagado' if sale.is_paid else 'No pagado'}'")
+            
+            messages.success(request, f"Pedido #{sale.id} actualizado: {' y '.join(updates)}")
             
             # Enviar notificación por email al cliente
             try:
@@ -643,7 +684,8 @@ def update_order_status(request, sale_id):
                 message = render_to_string('email/order_status_update.html', {
                     'sale': sale,
                     'user': sale.user,
-                    'status': sale.get_status_display()
+                    'status': sale.get_status_display(),
+                    'payment_updated': is_payment_updated,
                 })
                 
                 send_mail(
@@ -753,17 +795,67 @@ def add_to_cart(request, product_id):
     return redirect('products')
 
 @login_required
+def clear_user_cart(request):
+    """Vista para que el usuario pueda vaciar su propio carrito manualmente"""
+    if request.method == 'POST':
+        # Vaciar el carrito del usuario actual
+        CartItem.objects.filter(user=request.user).delete()
+        messages.success(request, "Tu carrito ha sido vaciado")
+        
+        # Redireccionar a la página especificada o por defecto a productos
+        if 'next' in request.POST:
+            return redirect(request.POST.get('next'))
+        return redirect('products')
+    
+    # Si no es POST, redirigir
+    return redirect('products')
+
+@login_required
 def add_review(request):
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
             reseña = form.save(commit=False)
+            reseña.nombre = request.user.get_full_name() or request.user.username
             reseña.usuario = request.user
             reseña.save()
             return render(request, 'review_process.html')
     else:
         form = ReviewForm()
     return render(request, 'add_review.html', {'form': form})
+
+@login_required
+def edit_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id, usuario=request.user)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            updated_review = form.save(commit=False)
+            updated_review.usuario = request.user
+            updated_review.nombre = request.user.first_name or request.user.username
+            updated_review.estado = 'pendiente'
+            updated_review.save()
+            return redirect(request, 'review_process.html')
+    else:
+        form = ReviewForm(instance=review)
+
+    return render(request, 'edit_review.html', {
+        'form': form,
+        'review': review,
+    })
+
+@login_required
+@user_passes_test(is_admin)
+def delete_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    
+    if request.method == 'POST':
+        review.delete()
+        messages.success(request, "La reseña fue eliminada correctamente.")
+        return redirect('/#reviews')
+
+    return render(request, 'confirm_delete.html', {'review': review})
 
 @staff_member_required
 def review_manager(request):

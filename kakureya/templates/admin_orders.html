@@ -45,9 +45,13 @@
                     </td>
                     <td>
                         {% if sale.is_paid %}
-                        <span class="badge bg-success">Sí</span>
+                        <span class="badge bg-success" data-bs-toggle="tooltip" title="ID: {{ sale.payment_id|default:'N/A' }}">
+                            <i class="ri-check-line me-1"></i>Pagado
+                        </span>
                         {% else %}
-                        <span class="badge bg-danger">No</span>
+                        <span class="badge bg-danger">
+                            <i class="ri-close-line me-1"></i>No pagado
+                        </span>
                         {% endif %}
                     </td>
                     <td>
@@ -101,18 +105,42 @@
                                 <p>{{ sale.notes }}</p>
                                 {% endif %}
                                 
-                                <h6 class="fw-bold">Cambiar estado:</h6>
-                                <form action="{% url 'update_order_status' sale.id %}" method="POST" class="d-flex gap-2">
+                                <h6 class="fw-bold">Actualizar pedido:</h6>
+                                <form action="{% url 'update_order_status' sale.id %}" method="POST" class="mt-2">
                                     {% csrf_token %}
-                                    <select name="status" class="form-select mb-4">
-                                        <option value="preparing" {% if sale.status == 'preparing' %}selected{% endif %}>En preparación</option>
-                                        <option value="shipping" {% if sale.status == 'shipping' %}selected{% endif %}>En camino</option>
-                                        <option value="delivered" {% if sale.status == 'delivered' %}selected{% endif %}>Entregado</option>
-                                        <option value="canceled" {% if sale.status == 'canceled' %}selected{% endif %}>Cancelado</option>
-                                    </select>
+                                    
+                                    <!-- Estado del pedido -->
+                                    <div class="mb-3">
+                                        <label for="status-{{ sale.id }}" class="form-label">Estado del pedido:</label>
+                                        <select id="status-{{ sale.id }}" name="status" class="form-select">
+                                            <option value="preparing" {% if sale.status == 'preparing' %}selected{% endif %}>En preparación</option>
+                                            <option value="shipping" {% if sale.status == 'shipping' %}selected{% endif %}>En camino</option>
+                                            <option value="delivered" {% if sale.status == 'delivered' %}selected{% endif %}>Entregado</option>
+                                            <option value="canceled" {% if sale.status == 'canceled' %}selected{% endif %}>Cancelado</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Nuevo: Estado de pago -->
+                                    <div class="mb-3">
+                                        <label for="payment-{{ sale.id }}" class="form-label">Estado del pago:</label>
+                                        <select id="payment-{{ sale.id }}" name="payment_status" class="form-select">
+                                            <option value="paid" {% if sale.is_paid %}selected{% endif %}>Pagado</option>
+                                            <option value="unpaid" {% if not sale.is_paid %}selected{% endif %}>No pagado</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Información de pago si existe -->
+                                    {% if sale.is_paid and sale.payment_id %}
+                                    <div class="mb-3">
+                                        <p class="mb-1"><small class="text-muted">ID de transacción: {{ sale.payment_id }}</small></p>
+                                        {% if sale.payment_method %}
+                                        <p class="mb-0"><small class="text-muted">Método: {{ sale.payment_method }}</small></p>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                    
                                     <div class="d-flex justify-content-end gap-2">
-                                        <button type="submit" class="btn btn-brand">Actualizar</button>
-                                        <!-- <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cerrar</button> -->
+                                        <button type="submit" class="btn btn-primary">Actualizar pedido</button>
                                     </div>
                                 </form>
                             </div>
@@ -130,4 +158,15 @@
     </div>
     {% endif %}
 </main>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltips.forEach(tooltip => {
+        new bootstrap.Tooltip(tooltip);
+    });
+});
+</script>
+{% endblock %}
 {% endblock %}

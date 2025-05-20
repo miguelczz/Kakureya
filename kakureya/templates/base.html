@@ -27,7 +27,9 @@
     {% endblock %}
 
     <!-- Footer -->
-    {% include '_footer.html' %}
+    {% if user.is_authenticated %}
+        {% include '_footer.html' %}
+    {% endif %}
 
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>

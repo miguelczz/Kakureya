@@ -1,62 +1,69 @@
-{% extends 'base.html' %}
-{% load static %}
-{% load group_filters %}
-
-{% block content %}
+{% extends 'base.html' %} {% load static %} {% load group_filters %} {% block content %}
 <section class="">
-  <div class="container mt-3">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <div class="bg-white p-5 theme-shadow rounded">
+    <div class="container mt-3">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="bg-white p-5 theme-shadow rounded">
+                    <h2 class="mb-4 text-center fw-bold">Agregar Reseña</h2>
 
-          <h2 class="mb-4 text-center fw-bold">Agregar Reseña</h2>
+                    <form method="POST" novalidate>
+                        {% csrf_token %} 
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <strong
+                                >Por favor corrige los siguientes
+                                errores:</strong
+                            >
+                            <ul>
+                                {% for field in form %} 
+                                {% for error in field.errors %}
+                                <li>
+                                    <strong>{{ field.label }}:</strong> {{ error
+                                    }}
+                                </li>
+                                {% endfor %} 
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
 
-          <form method="POST" novalidate>
-            {% csrf_token %}
-            
-            {% if form.errors %}
-              <div class="alert alert-danger">
-                <strong>Por favor corrige los siguientes errores:</strong>
-                <ul>
-                  {% for field in form %}
-                    {% for error in field.errors %}
-                      <li><strong>{{ field.label }}:</strong> {{ error }}</li>
-                    {% endfor %}
-                  {% endfor %}
-                </ul>
-              </div>
-            {% endif %}
+                        <div class="form-group mb-3">
+                            <label for="id_profesion" class="form-label"
+                                >Profesión</label
+                            >
+                            {{ form.profesion|add_class:"form-control" }}
+                        </div>
 
-            <div class="form-group mb-3">
-              <label for="id_nombre" class="form-label">Nombre</label>
-              {{ form.nombre|add_class:"form-control" }}
+                        <div class="form-group mb-3">
+                            <label for="id_calificacion" class="form-label"
+                                >Calificación</label
+                            >
+                            {{ form.calificacion|add_class:"form-control" }}
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="id_comentario" class="form-label"
+                                >Comentario</label
+                            >
+                            {{ form.comentario|add_class:"form-control" }}
+                        </div>
+
+                        <div class="d-grid d-flex justify-content-end gap-2">
+                            <div class="text-end mb-4">
+                                <a
+                                    href="{% url 'home' %}#reviews"
+                                    class="btn btn-outline-dark">
+                                    <i class="ri-arrow-left-line"></i> Volver
+                                </a>
+                            </div>
+                            <button type="submit" class="btn btn-brand h-100">
+                                Enviar Reseña
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <div class="form-group mb-3">
-              <label for="id_profesion" class="form-label">Profesión</label>
-              {{ form.profesion|add_class:"form-control" }}
-            </div>
-
-            <div class="form-group mb-3">
-              <label for="id_calificacion" class="form-label">Calificación</label>
-              {{ form.calificacion|add_class:"form-control" }}
-            </div>
-
-            <div class="form-group mb-4">
-              <label for="id_comentario" class="form-label">Comentario</label>
-              {{ form.comentario|add_class:"form-control" }}
-            </div>
-
-            <div class="d-grid">
-              <button type="submit" class="btn btn-brand">
-                Enviar Reseña
-              </button>
-            </div>
-          </form>
-
         </div>
-      </div>
     </div>
-  </div>
 </section>
 {% endblock %}

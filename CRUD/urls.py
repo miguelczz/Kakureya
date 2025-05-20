@@ -47,7 +47,9 @@ urlpatterns = [
     path('update-order-status/<int:sale_id>/', views.update_order_status, name='update_order_status'),
     path('add_review/', views.add_review, name='add_review'),
     path('moderating_review/', views.review_manager, name='review_manager'),
- 
+    path('/edit_review/<int:review_id>/', views.edit_review, name='edit_review'),
+    path('/delete_review/<int:review_id>/', views.delete_review, name='delete_review'),
+    path('clear-cart/', views.clear_user_cart, name='clear_cart'),
 ]
 
 if settings.DEBUG:

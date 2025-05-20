@@ -1,118 +1,118 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<main class="container d-flex justify-content-center align-items-center py-5">
+  <div class="card shadow-lg p-4" style="max-width: 500px; width: 100%;">
+    <h2 class="text-center fw-bold mb-4">Crear Cuenta</h2>
+    
+    <form method="POST" action="{% url 'signup' %}">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
 
-<main class="container">
-    <div class="row">
-        <div class="col-md-4 offset-md-4">
-            <form method="POST" action="{% url 'signup' %}" class="card card-body">
-                <h1>Registro</h1>
-                <div id="form-errors"></div>
-
-                {% csrf_token %}
-                
-                {{ form.non_field_errors }}
-                
-                <div class="mb-3">
-                    <label for="username">Nombre de usuario</label>
-                    <div class="text-danger small">
-                        {{ form.username.errors }}
-                    </div>
-                    <input type="text" name="username" id="username" class="form-control" placeholder="Escriba su nombre" required>
-                </div>
-
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <label for="email" class="form-label mb-0">Correo electrónico</label>
-                    </div>
-                    <div class="text-danger small">
-                        {{ form.email.errors }}
-                    </div>
-                    <input type="email" name="email" id="email" class="form-control" placeholder="Escriba su correo electrónico" required>
-                </div>
-                  
-
-                <div class="mb-3">
-                    <label for="phone_number">Número de celular</label>
-                    <div class="text-danger small">
-                        {{ form.phone_number.errors }}
-                    </div>
-                    <input type="text" name="phone_number" id="phone_number" class="form-control" placeholder="Escriba su número de celular">
-                </div>
-
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <label for="password1">Contraseña</label>
-                        {{ form.password1.errors }}
-                        <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#passwordHelpModal">
-                            ?
-                        </button>
-                    </div>
-                    <input type="password" name="password1" id="password1" class="form-control" placeholder="Escriba su contraseña" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="password2">Confirme su contraseña</label>
-                    {{ form.password2.errors }}
-                    <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirme su contraseña" required>
-                </div>
-                
-                <button class="btn btn-dark">
-                    Enviar
-                </button>
-            </form>
-            
-            <div class="modal fade" id="passwordHelpModal" tabindex="-1" aria-labelledby="passwordHelpModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <h5 class="modal-title" id="passwordHelpModalLabel">Instrucciones para el nombre de usuario</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                    </div>
-                    <div class="modal-body">
-                    • El nombre de usuario debe tener al menos 4 caracteres.<br>
-                    • No debe contener espacios.<br>
-                    • Debe ser único y recordable.
-                    </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Entendido</button>
-                    </div>
-                </div>
-                </div>
-            </div>
-
-            
+      <!-- Nombre de usuario -->
+      <div class="mb-3">
+        <label for="username" class="form-label fw-semibold">Nombre de usuario</label>
+        <div class="text-danger small">{{ form.username.errors }}</div>
+        <div class="d-flex align-items-center gap-2">
+          <input type="text" name="username" id="username" class="form-control" placeholder="Escriba su nombre" required>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#usernameHelpModal" title="Requisitos">
+            <i class="ri-question-line"></i>
+          </button>
         </div>
-       <!-- ✅ Script SOLO para Bootstrap -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+      </div>
 
-        <!-- ✅ Script personalizado que maneja el envío del formulario -->
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const form = document.querySelector("form");
-                if (!form) return;
-            
-                form.addEventListener("submit", async function (e) {
-                    e.preventDefault();
-            
-                    const formData = new FormData(form);
-                    const response = await fetch(form.action, {
-                        method: "POST",
-                        headers: {
-                            "X-CSRFToken": form.querySelector("[name=csrfmiddlewaretoken]").value
-                        },
-                        body: formData
-                    });
-            
-                    const data = await response.json();
-            
-                    if (data.success && data.redirect) {
-                        window.location.href = data.redirect;
-                    }
-                });
-            });
-        </script>
+      <!-- Email -->
+      <div class="mb-3">
+        <label for="email" class="form-label fw-semibold">Correo electrónico</label>
+        <div class="text-danger small">{{ form.email.errors }}</div>
+        <input type="email" name="email" id="email" class="form-control" placeholder="Escriba su correo" required>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="mb-3">
+        <label for="phone_number" class="form-label fw-semibold">Número de celular</label>
+        <div class="text-danger small">{{ form.phone_number.errors }}</div>
+        <input type="text" name="phone_number" id="phone_number" class="form-control" placeholder="Opcional">
+      </div>
+
+      <!-- Contraseña -->
+      <div class="mb-3">
+        <label for="password1" class="form-label fw-semibold">Contraseña</label>
+        <div class="text-danger small">{{ form.password1.errors }}</div>
+        <input type="password" name="password1" id="password1" class="form-control" placeholder="Escriba su contraseña" required>
+      </div>
+
+      <!-- Confirmar Contraseña -->
+      <div class="mb-4">
+        <label for="password2" class="form-label fw-semibold">Confirmar contraseña</label>
+        <div class="text-danger small">{{ form.password2.errors }}</div>
+        <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirme su contraseña" required>
+      </div>
+
+      <!-- Botón enviar -->
+      <div class="d-grid">
+        <button class="btn btn-dark fw-semibold">Registrarse</button>
+      </div>
+
+      <p class="text-center mt-3 mb-0 small">
+        ¿Ya tienes una cuenta?
+        <a href="{% url 'signin' %}" class="text-decoration-none">Inicia sesión</a>
+      </p>
+    </form>
+  </div>
+
+  <!-- Modal ayuda -->
+  <div class="modal fade" id="usernameHelpModal" tabindex="-1" aria-labelledby="usernameHelpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="usernameHelpModalLabel">Requisitos del nombre de usuario</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          • Al menos 4 caracteres.<br>
+          • Sin espacios.<br>
+          • Debe ser único y fácil de recordar.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Entendido</button>
+        </div>
+      </div>
     </div>
+  </div>
 </main>
 
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Script AJAX para envío -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.querySelector("form");
+  if (!form) return;
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const response = await fetch(form.action, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": form.querySelector("[name=csrfmiddlewaretoken]").value
+      },
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (data.success && data.redirect) {
+      window.location.href = data.redirect;
+    } else if (data.errors) {
+      document.getElementById("form-errors").innerHTML = `
+        <div class="alert alert-danger">${data.errors.join("<br>")}</div>
+      `;
+    }
+  });
+});
+</script>
 {% endblock %}

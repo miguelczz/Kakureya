@@ -16,6 +16,22 @@
                         <p class="mb-0">Te notificaremos cuando esté en camino.</p>
                     </div>
                     
+                    <!-- Nuevo bloque: Mensaje si hay productos en el carrito -->
+                    {% if request.user.cartitem_set.exists %}
+                    <div class="alert alert-warning mt-4">
+                        <p class="mb-0"><i class="ri-information-line"></i> Notamos que aún tienes productos en tu carrito. Puedes vaciar tu carrito haciendo clic en el botón de abajo.</p>
+                    </div>
+                    
+                    <form action="{% url 'clear_cart' %}" method="POST" class="mt-2 mb-4">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{% url 'order_history' %}">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="ri-shopping-cart-line"></i> Vaciar mi carrito
+                        </button>
+                    </form>
+                    {% endif %}
+                    <!-- Fin del nuevo bloque -->
+                    
                     <div class="mt-4">
                         <a href="{% url 'order_history' %}" class="btn btn-outline-dark me-2">Ver mis pedidos</a>
                         <a href="{% url 'products' %}" class="btn btn-dark">Seguir comprando</a>
