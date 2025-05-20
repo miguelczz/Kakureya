@@ -1,30 +1,26 @@
+from .forms import ProductForm, UserRegisterForm, CheckoutForm, ContactForm, ReviewForm
+from .models import Sale, SaleItem, UserProfile, CartItem, User, Product, Review
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import ProductForm, UserRegisterForm, CheckoutForm, ContactForm
+from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.encoding import force_bytes, force_str
-from django.contrib.auth.forms import SetPasswordForm
 from django.views.decorators.http import require_POST
 from django.template.loader import render_to_string
-from django.contrib.auth.models import User, Group
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import User
 from django.core.mail import send_mail, BadHeaderError
-from .models import Product, CartItem
+from django.contrib.auth.models import Group
 from django.http import JsonResponse
 from django.contrib import messages
-from .models import Sale, SaleItem
 from django.utils import timezone
 from django.conf import settings
-from .models import UserProfile
 from django.urls import reverse
 from decimal import Decimal
 import hashlib
-import logging
 import uuid
 
 def is_admin(user):
@@ -32,6 +28,12 @@ def is_admin(user):
 
 def home(request):
     submitted = request.GET.get('submitted') == 'true'
+    
+    reseñas = Review.objects.filter(estado='aprobado')
+    for r in reseñas:
+        r.full_stars = int(r.calificacion)
+        r.has_half = r.calificacion % 1 >= 0.5
+        r.empty_stars = 5 - r.full_stars - (1 if r.has_half else 0)
 
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -61,7 +63,7 @@ def home(request):
     else:
         form = ContactForm()
 
-    return render(request, 'home.html', {'form': form, 'submitted': submitted})
+    return render(request, 'home.html', {'reseñas': reseñas, 'form': form, 'submitted': submitted})
 
 def password_reset_request(request):
     if request.method == "POST":
@@ -587,21 +589,25 @@ def remove_from_cart(request, item_id): #Para eliminar un producto del carrito
         messages.success(request, 'Producto eliminado del carrito')
     return redirect('cart')
 
-@require_POST  # Asegúrate de tener este decorador importado
+@require_POST
 @login_required
 def update_cart_quantity(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, user=request.user)
-    action = request.POST.get('action')
-    
-    if action == 'increase':
+    action = request.POST.get("action")
+    if action == "increase":
         item.quantity += 1
-    elif action == 'decrease' and item.quantity > 1:
+    elif action == "decrease" and item.quantity > 1:
         item.quantity -= 1
-    
     item.save()
-    
-    # Redireccionar de vuelta al carrito en lugar de retornar JSON
-    return redirect('cart')  # O 'products_added' si ese es el nombre de tu URL
+
+    new_subtotal = item.product.price * item.quantity
+    total = sum(i.product.price * i.quantity for i in CartItem.objects.filter(user=request.user))
+
+    return JsonResponse({
+        "new_quantity": item.quantity,
+        "new_subtotal": f"{new_subtotal:.0f}",
+        "new_total": f"{total:.0f}",
+    })
 
 @login_required
 @user_passes_test(is_admin)
@@ -803,3 +809,61 @@ def clear_user_cart(request):
     
     # Si no es POST, redirigir
     return redirect('products')
+
+@login_required
+def add_review(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            reseña = form.save(commit=False)
+            reseña.nombre = request.user.get_full_name() or request.user.username
+            reseña.usuario = request.user
+            reseña.save()
+            return render(request, 'review_process.html')
+    else:
+        form = ReviewForm()
+    return render(request, 'add_review.html', {'form': form})
+
+@login_required
+def edit_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id, usuario=request.user)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            updated_review = form.save(commit=False)
+            updated_review.usuario = request.user
+            updated_review.nombre = request.user.first_name or request.user.username
+            updated_review.estado = 'pendiente'
+            updated_review.save()
+            return redirect(request, 'review_process.html')
+    else:
+        form = ReviewForm(instance=review)
+
+    return render(request, 'edit_review.html', {
+        'form': form,
+        'review': review,
+    })
+
+@login_required
+@user_passes_test(is_admin)
+def delete_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    
+    if request.method == 'POST':
+        review.delete()
+        messages.success(request, "La reseña fue eliminada correctamente.")
+        return redirect('/#reviews')
+
+    return render(request, 'confirm_delete.html', {'review': review})
+
+@staff_member_required
+def review_manager(request):
+    reseñas = Review.objects.filter(estado='pendiente')
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        decision = request.POST.get('accion')
+        reseña = Review.objects.get(id=id)
+        reseña.estado = decision
+        reseña.save()
+    return render(request, 'moderating_review.html', {'reseñas': reseñas})

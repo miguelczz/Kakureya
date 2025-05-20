@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% block content %}
+
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="text-center py-5">
+                <h3>Tu reseña está siendo procesada.</h3>
+                <p>
+                    Será visible cuando un administrador la apruebe. Gracias por
+                    tu opinión.
+                </p>
+                <div class="text-center mb-4">
+                    <a
+                        href="{% url 'home' %}#reviews"
+                        class="btn btn-dark">
+                        <i class="ri-arrow-left-line"></i> Volver
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

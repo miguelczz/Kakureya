@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Product
+from .models import Product, Review
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -71,3 +71,27 @@ class ContactForm(forms.Form):
     message = forms.CharField(
         widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Mensaje', 'rows': 5})
     )
+
+class ReviewForm(forms.ModelForm):
+    CALIFICACION_CHOICES = [
+        (5.0, "5.0"),
+        (4.5, "4.5"),
+        (4.0, "4.0"),
+        (3.5, "3.5"),
+        (3.0, "3.0"),
+        (2.5, "2.5"),
+        (2.0, "2.0"),
+        (1.5, "1.5"),
+        (1.0, "1.0"),
+        (0.5, "0.5"),
+    ]
+
+    calificacion = forms.ChoiceField(choices=CALIFICACION_CHOICES, widget=forms.Select(attrs={"class": "form-control"}))
+
+    class Meta:
+        model = Review
+        fields = ['profesion', 'calificacion', 'comentario']
+        widgets = {
+            'comentario': forms.Textarea(attrs={'rows': 4, 'class': 'form-control'}),
+            'profesion': forms.TextInput(attrs={'class': 'form-control'}),
+        }
