@@ -12,8 +12,6 @@
 
 @media (max-width: 768px) {
     #hero {
-        min-height: 45vh !important;
-        padding-top: 4rem;
-        padding-bottom: 4rem;
+        min-height: 50vh !important;
     }
 }
