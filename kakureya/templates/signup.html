@@ -3,8 +3,11 @@
 {% block content %}
 <main class="container d-flex justify-content-center align-items-center py-5">
   <div class="card shadow-lg p-4" style="max-width: 500px; width: 100%;">
-    <h2 class="text-center fw-bold mb-4">Crear Cuenta</h2>
-    
+    <h2 class="text-center fw-bold mb-3">Crear Cuenta</h2>
+
+    <!-- Div para mostrar errores desde AJAX -->
+    <div id="form-errors"></div>
+
     <form method="POST" action="{% url 'signup' %}">
       {% csrf_token %}
       {{ form.non_field_errors }}
@@ -61,7 +64,7 @@
     </form>
   </div>
 
-  <!-- Modal ayuda -->
+  <!-- Modal ayuda nombre de usuario -->
   <div class="modal fade" id="usernameHelpModal" tabindex="-1" aria-labelledby="usernameHelpModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -85,31 +88,43 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Script AJAX para envío -->
+<!-- Script AJAX -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.querySelector("form");
+  const errorContainer = document.getElementById("form-errors");
+
   if (!form) return;
 
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const formData = new FormData(form);
-    const response = await fetch(form.action, {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": form.querySelector("[name=csrfmiddlewaretoken]").value
-      },
-      body: formData
-    });
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": form.querySelector("[name=csrfmiddlewaretoken]").value,
+        },
+        body: formData,
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success && data.redirect) {
-      window.location.href = data.redirect;
-    } else if (data.errors) {
-      document.getElementById("form-errors").innerHTML = `
-        <div class="alert alert-danger">${data.errors.join("<br>")}</div>
+      if (data.success && data.redirect) {
+        window.location.href = data.redirect;
+      } else if (data.errors) {
+        errorContainer.innerHTML = `
+          <div class="alert alert-danger">${data.errors.join("<br>")}</div>
+        `;
+      } else {
+        errorContainer.innerHTML = `
+          <div class="alert alert-warning">Ocurrió un error inesperado.</div>
+        `;
+      }
+    } catch (err) {
+      errorContainer.innerHTML = `
+        <div class="alert alert-danger">Error al procesar la solicitud. Intenta nuevamente.</div>
       `;
     }
   });
