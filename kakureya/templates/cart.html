@@ -1,8 +1,11 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<link rel="stylesheet" href="{% static 'css/cart.css' %}" />
+
 <main class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Carrito de Compras</h1>
-        <a href="{% url 'order_history' %}" class="btn btn-outline-dark">
+        <a href="{% url 'order_history' %}" class="btn btn-outlx    ine-dark">
             <i class="ri-history-line"></i> Ver mis pedidos
         </a>
     </div>
@@ -10,7 +13,7 @@
     {% if cart_items %}
     <div class="card border-0">
         <div class="card-body p-0">
-            <table class="table table-bordered mb-0">
+            <table class="table table-bordered mb-0 cart-table">
                 <thead class="table-dark">
                     <tr>
                         <th>Producto</th>
@@ -23,25 +26,25 @@
                 <tbody>
                     {% for item in cart_items %}
                     <tr id="row-{{ item.id }}">
-                        <td>
-                            <div class="d-flex align-items-center">
+                        <td class="align-middle">
+                            <!-- Vista escritorio -->
+                            <div class="d-none d-md-flex align-items-center">
                                 {% if item.product.image %}
-                                <img
-                                    src="{{ item.product.image.url }}"
-                                    alt="{{ item.product.name }}"
-                                    class="img-thumbnail me-3"
-                                    style="
-                                        width: 60px;
-                                        height: 60px;
-                                        object-fit: cover;
-                                    " />
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;" />
                                 {% endif %}
                                 <div>
-                                    <h6 class="mb-0">
-                                        {{ item.product.name }}
-                                    </h6>
+                                    <h6 class="mb-0">{{ item.product.name }}</h6>
                                     <small class="text-muted">{{ item.product.description|truncatechars:60 }}</small>
                                 </div>
+                            </div>
+
+                            <!-- Vista móvil -->
+                            <div class="d-block d-md-none text-center">
+                                {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="product-img-mobile mb-2" />
+                                {% endif %}
+                                <h6 class="product-name mb-0">{{ item.product.name }}</h6>
+                                <small class="product-desc text-muted">{{ item.product.description|truncatechars:60 }}</small>
                             </div>
                         </td>
                         <td class="text-center align-middle">
@@ -112,7 +115,7 @@
                     </tr>
                     {% endfor %}
                 </tbody>
-                <tfoot class="table-light">
+                <tfoot class="table-light d-md-table-row-group">
                     <tr>
                         <td colspan="3" class="text-end fw-bold">Total:</td>
                         <td class="text-center fw-bold" id="cart-total">
@@ -122,32 +125,42 @@
                     </tr>
                 </tfoot>
             </table>
-        </div>
-        <div class="d-flex justify-content-between border-1 mt-4">
-            <div>
-                <a href="/#categories" class="btn btn-outline-dark"
-                    ><i class="ri-arrow-left-line"></i> Seguir comprando</a
-                >
 
-                <!-- Botón para vaciar carrito -->
-                <form
-                    action="{% url 'clear_cart' %}"
-                    method="POST"
-                    class="d-inline ms-2">
+            <!-- Total para celular -->
+            <div class="cart-total-mobile d-md-none">
+                <div class="total-box">
+                    <span class="label">Total:</span>
+                    <span class="amount" id="cart-total-mobile">${{ total|floatformat:0 }}</span>
+                </div>
+            </div>
+
+        </div>
+       <div class="cart-buttons mt-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-stretch w-100 gap-2">
+
+                <!-- Botones de seguir y vaciar -->
+                <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-md-auto">
+                <a href="/#categories" class="btn btn-outline-dark flex-fill flex-md-shrink-0">
+                    <i class="ri-arrow-left-line"></i> Seguir comprando
+                </a>
+                <form action="{% url 'clear_cart' %}" method="POST" class="w-100 w-md-auto">
                     {% csrf_token %}
-                    <button
-                        type="submit"
-                        class="btn btn-outline-danger"
-                        onclick="return confirm('¿Estás seguro de vaciar todo el carrito?')">
-                        <i class="ri-delete-bin-line"></i> Vaciar carrito
+                    <button type="submit" class="btn btn-outline-danger flex-fill flex-md-shrink-0">
+                    <i class="ri-delete-bin-line"></i> Vaciar carrito
                     </button>
                 </form>
+                </div>
+
+                <!-- Botón pagar -->
+                <div class="w-100 w-md-auto d-flex justify-content-end">
+                <a href="{% url 'checkout' %}" class="btn btn-success w-80 w-md-auto text-center">
+                    Proceder al pago
+                </a>
+                </div>
+
             </div>
-            <a href="{% url 'checkout' %}" class="btn btn-success"
-                >Proceder al pago</a
-            >
         </div>
-    </div>
+
     {% else %}
     <div class="text-center py-5">
         <i
@@ -186,9 +199,11 @@
                     document.getElementById(
                         `subtotal-${itemId}`
                     ).textContent = `$${data.new_subtotal}`;
-                    document.getElementById(
-                        `cart-total`
-                    ).textContent = `$${data.new_total}`;
+                    document.getElementById('cart-total').textContent = `$${data.new_total}`;
+                    const mobileTotal = document.getElementById('cart-total-mobile');
+                    if (mobileTotal) {
+                        mobileTotal.textContent = `$${data.new_total}`;
+                    }
                 } else {
                     console.error(
                         "Error al actualizar la cantidad",

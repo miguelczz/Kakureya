@@ -1,6 +1,19 @@
 #hero {
-    background: linear-gradient(rgba(var(--c-brand-rgb), 0.507), rgba(var(--c-brand-rgb), 0.438), #000), url('../images/hero.jpg');
+    background: linear-gradient(
+            rgba(var(--c-brand-rgb), 0.507),
+            rgba(var(--c-brand-rgb), 0.438),
+            #000
+        ),
+        url("../images/hero.jpg");
     background-position: center;
     background-size: cover;
     height: 80vh;
+}
+
+@media (max-width: 768px) {
+    #hero {
+        min-height: 45vh !important;
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+    }
 }

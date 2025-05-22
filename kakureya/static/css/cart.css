@@ -1,0 +1,140 @@
+/* Imagen para móviles */
+.product-img-mobile {
+  display: block;
+  margin: 0 auto;
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .cart-table thead {
+    display: none;
+  }
+
+  .cart-table, .cart-table tbody, .cart-table tr, .cart-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .cart-table tr {
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 1rem;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  .cart-table td {
+    border: none !important;
+    padding: 0.5rem 0;
+  }
+
+  .product-img-responsive {
+    display: block;
+    margin: 0 auto 0.75rem auto;
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .product-name,
+  .product-desc {
+    text-align: center;
+  }
+
+  #cart-total {
+    font-size: 1.2rem;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  .cart-buttons {
+    margin-top: 2rem;
+  }
+
+  .cart-buttons .button-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 576px) {
+    .cart-buttons .button-row {
+      flex-direction: row;
+    }
+  }
+
+  .cart-buttons .btn {
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 0.75rem;
+  }
+
+  .cart-buttons .btn-success {
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+
+  .cart-total-mobile {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
+  .cart-total-mobile .total-box {
+    width: 100%;
+    max-width: 300px;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    text-align: center;
+  }
+
+  .cart-total-mobile .label {
+    display: block;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #444;
+  }
+
+  .cart-total-mobile .amount {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #000;
+  }
+}
+
+/* Esconde tfoot en móviles */
+@media (max-width: 768px) {
+  tfoot {
+    display: none;
+  }
+
+  .cart-buttons .btn-success {
+    min-width: 200px;
+  }
+
+  .cart-buttons a,
+  .cart-buttons form {
+    flex-grow: 0;
+  }
+
+  .cart-buttons .btn-outline-dark,
+  .cart-buttons .btn-outline-danger {
+    white-space: nowrap;
+  }
+  
+  .cart-buttons .btn {
+    white-space: nowrap;
+    padding: 0.6rem 1.2rem;
+  }
+}

@@ -9,14 +9,14 @@
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm h-100">
                 <div class="card-header d-flex justify-content-between align-items-center 
-                            {% if sale.is_paid %}bg-success text-white{% else %}bg-secundary{% endif %}">
-                    <h5 class="mb-0">Pedido #{{ sale.id }}</h5>
-                    <span class="badge bg-light text-dark">{{ sale.created_at|date:"d/m/Y H:i" }}</span>
+                            {% if sale.is_paid %}bg-success {% else %}bg-secundary{% endif %}">
+                    <h5 class="mb-0 {% if sale.is_paid %}text-white{% endif %}">Pedido #{{ sale.id }}</h5>
+                    <span class="badge {% if sale.is_paid %}text-white {% else %} text-black {% endif %}">{{ sale.created_at|date:"d/m/Y H:i" }}</span>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <h6 class="fw-bold">Estado del pedido:</h6>
-                        <span class="badge 
+                        <span class="badge
                             {% if sale.status == 'preparing' %}bg-primary{% endif %}
                             {% if sale.status == 'shipping' %}bg-info{% endif %}
                             {% if sale.status == 'delivered' %}bg-success{% endif %}
@@ -60,8 +60,8 @@
                 </div>
                 
                 {% if not sale.is_paid %}
-                <div class="card-footer d-flex justify-content-end">
-                    <a href="{% url 'payment' sale.id %}" class="btn btn-warning">Completar pago</a>
+                <div class="d-flex justify-content-end pb-3 pe-3">
+                    <a href="{% url 'payment' sale.id %}" class="btn btn-brand">Completar pago</a>
                 </div>
                 {% endif %}
             </div>
