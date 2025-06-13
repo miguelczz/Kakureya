@@ -111,20 +111,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const data = await response.json();
 
-      if (data.success && data.redirect) {
+      if (response.ok && data.success && data.redirect) {
         window.location.href = data.redirect;
-      } else if (data.errors) {
+      } else if (!response.ok && data.errors) {
         errorContainer.innerHTML = `
-          <div class="alert alert-danger">${data.errors.join("<br>")}</div>
-        `;
-      } else {
-        errorContainer.innerHTML = `
-          <div class="alert alert-warning">Ocurrió un error inesperado.</div>
+          <div class="alert alert-danger">
+            ${data.errors.map(err => `<div>• ${err}</div>`).join("")}
+          </div>
         `;
       }
     } catch (err) {
       errorContainer.innerHTML = `
-        <div class="alert alert-danger">Error al procesar la solicitud. Intenta nuevamente.</div>
+        <div class="alert alert-danger">Error inesperado al procesar la solicitud.</div>
       `;
     }
   });

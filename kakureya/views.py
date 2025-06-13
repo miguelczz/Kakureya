@@ -172,29 +172,35 @@ def signup(request):
             email = form.cleaned_data.get('email')
             phone = form.cleaned_data.get('phone_number')
 
-            # Validaciones personalizadas antes de crear el usuario
-            has_errors = False
+            # Validaciones personalizadas
+            errores_personalizados = []
+
             if UserProfile.objects.filter(email=email).exists():
                 form.add_error('email', 'Este correo ya está registrado.')
-                has_errors = True
+                errores_personalizados.append('Correo electrónico: Este correo ya está registrado.')
 
             if phone and UserProfile.objects.filter(phone_number=phone).exists():
                 form.add_error('phone_number', 'Este número de celular ya está registrado.')
-                has_errors = True
+                errores_personalizados.append('Número de celular: Este número ya está registrado.')
 
-            if has_errors:
-                error_dict = {field: [str(e) for e in errs] for field, errs in form.errors.items()}
-                return JsonResponse({'errors': error_dict}, status=400)
+            if errores_personalizados:
+                return JsonResponse({'success': False, 'errors': errores_personalizados}, status=400)
 
-            # Crear usuario y perfil desde el formulario (form.save ya incluye UserProfile)
-            user = form.save()  # UserRegisterForm se encarga de guardar perfil
+            # Crear el usuario y loguearlo
+            user = form.save()
             login(request, user)
             return JsonResponse({'success': True, 'redirect': reverse('products')})
 
-        else:
-            error_dict = {field: [str(e) for e in errs] for field, errs in form.errors.items()}
-            return JsonResponse({'errors': error_dict}, status=400)
+        # Errores estándar del formulario
+        errores = []
+        for campo, lista in form.errors.items():
+            for mensaje in lista:
+                campo_legible = campo.replace('_', ' ').capitalize()
+                errores.append(f"{campo_legible}: {mensaje}")
 
+        return JsonResponse({'success': False, 'errors': errores}, status=400)
+
+    # GET request
     return render(request, 'signup.html', {'form': UserRegisterForm()})
 
 @login_required
