@@ -210,22 +210,26 @@ def signout(request):
 
 def signin(request):
     if request.method == "GET":
+        return render(request, "signin.html")
+
+    email = request.POST.get("email")
+    password = request.POST.get("password")
+
+    try:
+        user_obj = User.objects.get(email=email)
+    except User.DoesNotExist:
         return render(request, "signin.html", {
-            "form": AuthenticationForm()
+            "error": "Correo o contraseña incorrectos"
         })
 
-    user = authenticate(
-        request, username=request.POST["username"], password=request.POST["password"]
-    )
+    user = authenticate(request, username=user_obj.username, password=password)
 
     if user is None:
         return render(request, "signin.html", {
-            "form": AuthenticationForm(),
-            "error": "Usuario o contraseña incorrectos"
+            "error": "Correo o contraseña incorrectos"
         })
 
     login(request, user)
-
     return redirect("home")
 
 def password_reset_request(request):

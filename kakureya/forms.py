@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Product, Review
+from .models import Product, Review, UserProfile
+
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -16,18 +17,55 @@ class ProductForm(forms.ModelForm):
         }
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-    phone_number = forms.CharField(max_length=15, required=False)
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'correo@ejemplo.com'}))
+    first_name = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Primer nombre'}))
+    middle_name = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Segundo nombre (opcional)'}))
+    last_name = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Primer apellido'}))
+    second_last_name = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Segundo apellido'}))
+    dni = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Documento de identidad'}))
+    address = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Dirección completa', 'rows': 3}))
+    phone_number = forms.CharField(max_length=15, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Número de teléfono (opcional)'}))
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'phone_number', 'password1', 'password2']
+        fields = ['email', 'first_name', 'middle_name', 'last_name', 'second_last_name', 
+                  'dni', 'address', 'phone_number', 'password1', 'password2']
 
     def save(self, commit=True):
         user = super().save(commit=False)
+        
+        # El campo username será el email (sin @ ni dominio) para compatibilidad
+        email_username = self.cleaned_data['email'].split('@')[0]
+        # Asegurarse de que sea único
+        base_username = email_username
+        counter = 1
+        while User.objects.filter(username=email_username).exists():
+            email_username = f"{base_username}{counter}"
+            counter += 1
+            
+        user.username = email_username
         user.email = self.cleaned_data['email']
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        
         if commit:
             user.save()
+            
+            # Crear o actualizar el perfil de usuario
+            userprofile, created = UserProfile.objects.get_or_create(
+                user=user,
+                defaults={
+                    'email': self.cleaned_data['email'],
+                    'first_name': self.cleaned_data['first_name'],
+                    'middle_name': self.cleaned_data['middle_name'],
+                    'last_name': self.cleaned_data['last_name'],
+                    'second_last_name': self.cleaned_data['second_last_name'],
+                    'dni': self.cleaned_data['dni'],
+                    'address': self.cleaned_data['address'],
+                    'phone_number': self.cleaned_data['phone_number']
+                }
+            )
+            
         return user
     
 class CheckoutForm(forms.Form):

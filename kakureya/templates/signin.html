@@ -19,16 +19,16 @@
             {% csrf_token %}
 
             <div class="mb-3">
-              <label for="username" class="form-label fw-semibold">Nombre de usuario</label>
-              <input type="text" name="username" id="username" class="form-control" placeholder="Escriba su nombre" required>
+              <label for="email" class="form-label fw-semibold">Correo electrónico</label>
+              <input type="email" name="email" id="email" class="form-control" placeholder="Ingrese su correo" required>
             </div>
 
             <div class="mb-5">
-                <label for="password" class="form-label fw-semibold">Contraseña</label>
-                <input type="password" name="password" id="password" class="form-control" placeholder="Escriba su contraseña" required>
-                <div class="mt-1 text-end">
-                    <a href="{% url 'password_reset' %}" class="small">¿Olvidaste tu contraseña?</a>
-                </div>
+              <label for="password" class="form-label fw-semibold">Contraseña</label>
+              <input type="password" name="password" id="password" class="form-control" placeholder="Ingrese su contraseña" required>
+              <div class="mt-1 text-end">
+                <a href="{% url 'password_reset' %}" class="small">¿Olvidaste tu contraseña?</a>
+              </div>
             </div>
 
             <div class="d-grid">
