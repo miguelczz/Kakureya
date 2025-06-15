@@ -1,0 +1,14 @@
+<!-- templates/test_upload.html -->
+<h2>Subir imagen de prueba a S3</h2>
+
+{% if url %}
+    <p><strong>Imagen subida:</strong></p>
+    <img src="{{ url }}" style="max-width: 300px;">
+    <p>URL: <a href="{{ url }}" target="_blank">{{ url }}</a></p>
+{% endif %}
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="archivo">
+    <button type="submit">Subir archivo</button>
+</form>
