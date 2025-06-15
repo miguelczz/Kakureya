@@ -14,13 +14,14 @@ from pathlib import Path
 import os
 import dj_database_url
 from dotenv import load_dotenv
-
-# Cargar las variables desde .env
-load_dotenv()
-
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+from decouple import config
 
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+
+if DEBUG:
+    load_dotenv()
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
