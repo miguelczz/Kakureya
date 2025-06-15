@@ -15,6 +15,13 @@ import os
 import dj_database_url
 from dotenv import load_dotenv
 
+# Cargar las variables desde .env
+load_dotenv()
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,13 +31,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com']
 
 # Application definition
 
 INSTALLED_APPS = [
+    'storages',
     'admin_interface',
     'colorfield', 
     'django.contrib.admin',
@@ -76,8 +83,6 @@ WSGI_APPLICATION = 'CRUD.wsgi.application'
 
 # Database
 
-# Cargar las variables desde .env
-load_dotenv()
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -89,6 +94,28 @@ DATABASES = {
 DATABASES['default']['OPTIONS'] = {
     'client_encoding': 'WIN1252'
 }
+
+# === AWS S3 STORAGE CONFIGURATION ===
+# Carga las variables desde el entorno
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME', 'us-east-1')
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+
+# Opciones de manejo de archivos
+AWS_S3_FILE_OVERWRITE = False  # No sobrescribir archivos con el mismo nombre
+AWS_DEFAULT_ACL = None         # Desactiva control de acceso predeterminado (usa el de IAM)
+AWS_S3_ADDRESSING_STYLE = "virtual"  # Mejora compatibilidad en algunas regiones
+
+# Cache-Control para rendimiento (opcional)
+AWS_S3_OBJECT_PARAMETERS = {
+    "CacheControl": "max-age=86400",  # 1 día
+}
+
+# URL base de medios (media files)
+MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
+MEDIA_ROOT = ''  # No necesario para S3, pero evita errores en algunos entornos
 
 
 # Password validation
@@ -133,9 +160,6 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')    
 
 if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
