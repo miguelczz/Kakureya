@@ -2,8 +2,15 @@
 
 {% block content %}
 <main class="container d-flex justify-content-center align-items-center py-5">
-  <div class="card shadow-lg p-4" style="max-width: 500px; width: 100%;">
-    <h2 class="text-center fw-bold mb-3">Crear Cuenta</h2>
+  <div class="card shadow-lg p-4" style="max-width: 800px; width: 100%;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="fw-bold mb-0">Crear Cuenta</h2>
+      <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#instructionsModal">
+        <i class="ri-information-line me-1"></i> Instrucciones
+      </button>
+    </div>
+    
+    <p class="text-muted small mb-4">Los campos marcados con <span class="text-danger">*</span> son obligatorios</p>
 
     <!-- Div para mostrar errores desde AJAX -->
     <div id="form-errors"></div>
@@ -12,44 +19,100 @@
       {% csrf_token %}
       {{ form.non_field_errors }}
 
-      <!-- Nombre de usuario -->
-      <div class="mb-3">
-        <label for="username" class="form-label fw-semibold">Nombre de usuario</label>
-        <div class="text-danger small">{{ form.username.errors }}</div>
-        <div class="d-flex align-items-center gap-2">
-          <input type="text" name="username" id="username" class="form-control" placeholder="Escriba su nombre" required>
-          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#usernameHelpModal" title="Requisitos">
-            <i class="ri-question-line"></i>
-          </button>
+      <div class="row">
+        <!-- Primer nombre -->
+        <div class="col-md-6 mb-3">
+          <label for="first_name" class="form-label fw-semibold">
+            Primer nombre <span class="text-danger">*</span>
+          </label>
+          <div class="text-danger small">{{ form.first_name.errors }}</div>
+          <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Primer nombre" required>
+        </div>
+
+        <!-- Segundo nombre (opcional) -->
+        <div class="col-md-6 mb-3">
+          <label for="middle_name" class="form-label fw-semibold">
+            Segundo nombre <span class="text-muted"></span>
+          </label>
+          <div class="text-danger small">{{ form.middle_name.errors }}</div>
+          <input type="text" name="middle_name" id="middle_name" class="form-control" placeholder="Segundo nombre">
         </div>
       </div>
 
-      <!-- Email -->
+      <div class="row">
+        <!-- Primer apellido -->
+        <div class="col-md-6 mb-3">
+          <label for="last_name" class="form-label fw-semibold">
+            Primer apellido <span class="text-danger">*</span>
+          </label>
+          <div class="text-danger small">{{ form.last_name.errors }}</div>
+          <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Primer apellido" required>
+        </div>
+
+        <!-- Segundo apellido (ahora obligatorio) -->
+        <div class="col-md-6 mb-3">
+          <label for="second_last_name" class="form-label fw-semibold">
+            Segundo apellido <span class="text-danger">*</span>
+          </label>
+          <div class="text-danger small">{{ form.second_last_name.errors }}</div>
+          <input type="text" name="second_last_name" id="second_last_name" class="form-control" placeholder="Segundo apellido" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- DNI -->
+        <div class="col-md-6 mb-3">
+          <label for="dni" class="form-label fw-semibold">
+            Documento de identidad <span class="text-danger">*</span>
+          </label>
+          <div class="text-danger small">{{ form.dni.errors }}</div>
+          <input type="text" name="dni" id="dni" class="form-control" placeholder="Número de documento" required>
+        </div>
+
+        <!-- Email -->
+        <div class="col-md-6 mb-3">
+          <label for="email" class="form-label fw-semibold">
+            Correo electrónico <span class="text-danger">*</span>
+          </label>
+          <div class="text-danger small">{{ form.email.errors }}</div>
+          <input type="email" name="email" id="email" class="form-control" placeholder="Correo electrónico" required>
+        </div>
+      </div>
+      
+      <!-- Dirección -->
       <div class="mb-3">
-        <label for="email" class="form-label fw-semibold">Correo electrónico</label>
-        <div class="text-danger small">{{ form.email.errors }}</div>
-        <input type="email" name="email" id="email" class="form-control" placeholder="Escriba su correo" required>
+        <label for="address" class="form-label fw-semibold">
+          Dirección <span class="text-danger">*</span>
+        </label>
+        <div class="text-danger small">{{ form.address.errors }}</div>
+        <textarea name="address" id="address" class="form-control" rows="3" placeholder="Dirección completa" required></textarea>
       </div>
 
       <!-- Teléfono -->
       <div class="mb-3">
-        <label for="phone_number" class="form-label fw-semibold">Número de celular</label>
+        <label for="phone_number" class="form-label fw-semibold">
+          Número de teléfono <span class="text-muted"></span>
+        </label>
         <div class="text-danger small">{{ form.phone_number.errors }}</div>
-        <input type="text" name="phone_number" id="phone_number" class="form-control" placeholder="Opcional">
+        <input type="text" name="phone_number" id="phone_number" class="form-control" placeholder="Número de teléfono">
       </div>
 
       <!-- Contraseña -->
       <div class="mb-3">
-        <label for="password1" class="form-label fw-semibold">Contraseña</label>
+        <label for="password1" class="form-label fw-semibold">
+          Contraseña <span class="text-danger">*</span>
+        </label>
         <div class="text-danger small">{{ form.password1.errors }}</div>
-        <input type="password" name="password1" id="password1" class="form-control" placeholder="Escriba su contraseña" required>
+        <input type="password" name="password1" id="password1" class="form-control" placeholder="Contraseña" required>
       </div>
 
       <!-- Confirmar Contraseña -->
       <div class="mb-4">
-        <label for="password2" class="form-label fw-semibold">Confirmar contraseña</label>
+        <label for="password2" class="form-label fw-semibold">
+          Confirmar contraseña <span class="text-danger">*</span>
+        </label>
         <div class="text-danger small">{{ form.password2.errors }}</div>
-        <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirme su contraseña" required>
+        <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirmar contraseña" required>
       </div>
 
       <!-- Botón enviar -->
@@ -63,68 +126,94 @@
       </p>
     </form>
   </div>
+</main>
 
-  <!-- Modal ayuda nombre de usuario -->
-  <div class="modal fade" id="usernameHelpModal" tabindex="-1" aria-labelledby="usernameHelpModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="usernameHelpModalLabel">Requisitos del nombre de usuario</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+<!-- Modal de instrucciones -->
+<div class="modal fade" id="instructionsModal" tabindex="-1" aria-labelledby="instructionsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="instructionsModalLabel">Instrucciones para el registro</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-4">
+          <h6 class="fw-bold">Información personal</h6>
+          <p>Para crear tu cuenta en Kakureya, necesitamos los siguientes datos personales:</p>
+          <ul>
+            <li><strong>Nombre completo:</strong> Tu primer nombre y primer apellido son obligatorios. El segundo nombre es opcional, pero el segundo apellido es obligatorio.</li>
+            <li><strong>Documento de identidad (DNI):</strong> Ingresa tu número de identificación sin puntos ni espacios.</li>
+            <li><strong>Correo electrónico:</strong> Asegúrate de proporcionar un correo electrónico válido, ya que será tu método principal para iniciar sesión.</li>
+          </ul>
         </div>
-        <div class="modal-body">
-          • Al menos 4 caracteres.<br>
-          • Sin espacios.<br>
-          • Debe ser único y fácil de recordar.
+        
+        <div class="mb-4">
+          <h6 class="fw-bold">Dirección y contacto</h6>
+          <p>Necesitamos tu dirección para poder enviarte los pedidos:</p>
+          <ul>
+            <li><strong>Dirección completa:</strong> Incluye calle, número, apartamento, barrio y referencias de ser necesario.</li>
+            <li><strong>Teléfono:</strong> Aunque es opcional, te recomendamos proporcionarlo para contactarte en caso de incidencias con tu pedido.</li>
+          </ul>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Entendido</button>
+        
+        <div class="mb-4">
+          <h6 class="fw-bold">Contraseña</h6>
+          <p>Para mayor seguridad, tu contraseña debe cumplir con los siguientes requisitos:</p>
+          <ul>
+            <li>Mínimo 8 caracteres</li>
+            <li>No puede ser similar a tu información personal</li>
+            <li>No puede ser una contraseña común (como "123456")</li>
+            <li>No puede consistir únicamente en números</li>
+          </ul>
         </div>
+        
+        <div class="alert alert-info mb-0">
+          <p class="mb-0">Para cualquier duda o problema con el registro, puedes contactar con nuestro soporte técnico en <a href="mailto:soporte@kakureya.com">soporte@kakureya.com</a></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
-</main>
+</div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Script AJAX -->
+<!-- Script para el manejo del envío del formulario via AJAX -->
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.querySelector("form");
-  const errorContainer = document.getElementById("form-errors");
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.querySelector('form');
+  const errorContainer = document.getElementById('form-errors');
 
-  if (!form) return;
-
-  form.addEventListener("submit", async function (e) {
+  form.addEventListener('submit', function(e) {
     e.preventDefault();
 
     const formData = new FormData(form);
-    try {
-      const response = await fetch(form.action, {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": form.querySelector("[name=csrfmiddlewaretoken]").value,
-        },
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success && data.redirect) {
-        window.location.href = data.redirect;
-      } else if (!response.ok && data.errors) {
-        errorContainer.innerHTML = `
-          <div class="alert alert-danger">
-            ${data.errors.map(err => `<div>• ${err}</div>`).join("")}
-          </div>
-        `;
+    fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
       }
-    } catch (err) {
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        window.location.href = data.redirect;
+      } else {
+        // Mostrar errores
+        errorContainer.innerHTML = '<div class="alert alert-danger"><ul class="mb-0">';
+        data.errors.forEach(error => {
+          errorContainer.innerHTML += `<li>${error}</li>`;
+        });
+        errorContainer.innerHTML += '</ul></div>';
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
       errorContainer.innerHTML = `
         <div class="alert alert-danger">Error inesperado al procesar la solicitud.</div>
       `;
-    }
+    });
   });
 });
 </script>

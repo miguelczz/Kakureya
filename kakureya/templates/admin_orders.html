@@ -31,8 +31,8 @@
                 {% for sale in sales %}
                 <tr>
                     <td>{{ sale.id }}</td>
-                    <td>{{ sale.user.username }}</td>
-                    <td>{{ sale.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>{{ sale.user.first_name }} {{ sale.user.last_name }}</td>
+                    <td>{{ sale.created_at|date:"d/m/Y h:i A" }}</td>
                     <td>${{ sale.get_total|add:5000|floatformat:0 }}</td>
                     <td>
                         <span class="badge 

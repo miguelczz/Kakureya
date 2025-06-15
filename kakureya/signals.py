@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 @receiver(post_save, sender=User)
 def assign_user_group(sender, instance, created, **kwargs):
     if created:
-        if instance.username == 'admin':
+        if instance.email == 'kakureyagroup@gmail.com':
             admin_group = Group.objects.get(name='Administrador')
             instance.groups.add(admin_group)
         else:
@@ -23,23 +23,7 @@ def save_user_profile(sender, instance, **kwargs):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         try:
-            instance.userprofile  # intenta acceder al perfil
+            instance.userprofile
         except ObjectDoesNotExist:
             UserProfile.objects.create(user=instance, email=instance.email)
-            print(f"Perfil creado automáticamente para {instance.username}")
-
-# Se agregaron nuevas señales para crear y guardar el perfil de usuario
-# y asignar el grupo correspondiente al usuario creado.
-
-# La señal assign_user_group verifica si el usuario creado es el administrador
-# y le asigna el grupo 'Administrador', en caso contrario le asigna el grupo 'Cliente'.
-
-# La señal create_user_profile crea un perfil de usuario para el usuario creado.
-
-# La señal save_user_profile guarda el perfil de usuario creado.
-#---------------------------------------------------------------
-# @receiver(post_save, sender=User)
-# def assign_default_group(sender, instance, created, **kwargs):
-#     if created and not instance.groups.exists():
-#         cliente_group = Group.objects.get(name='Cliente')
-#         instance.groups.add(cliente_group)
+            print(f"Perfil creado automáticamente para {instance.email}")

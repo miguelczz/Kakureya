@@ -23,8 +23,14 @@
       <tbody>
         {% for user in users %}
         <tr>
-          <td class="text-center">{{ user.username }}</td>
-          <td class="text-center">{{ user.groups.first.name|default:"Sin grupo" }}</td>
+          <td class="text-center">
+            {{ user.first_name }} {{ user.last_name }}<br>
+            <small class="text-muted">{{ user.email }}</small>
+          </td>
+
+          <td class="text-center">
+            {{ user.groups.first.name|default:"Sin grupo" }}
+          </td>
 
           <td class="text-center">
             <form method="POST" class="d-flex justify-content-center gap-2 mb-0">

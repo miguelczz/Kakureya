@@ -3,15 +3,19 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.module_loading import import_string
 
-
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email = models.EmailField(max_length=254, unique=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(max_length=255, blank=True, null=True)
+    second_last_name = models.CharField(max_length=30)
+    first_name = models.CharField(max_length=30)
+    middle_name = models.CharField(max_length=30, blank=True, null=True)
+    last_name = models.CharField(max_length=30)
+    dni = models.CharField(max_length=20, unique=True, blank=True, null=True)
 
     def __str__(self):
-        return self.user.username
+        return self.user.email
 
 class Product(models.Model):
     CATEGORY_CHOICES = [
