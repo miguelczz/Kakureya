@@ -49,11 +49,9 @@ setup.bat
 ```
 Este script realiza las siguientes acciones:
 
-Crea el entorno virtual en venv/
-
-Instala automáticamente las dependencias listadas en requirements.txt
-
-Crea un archivo .env de ejemplo con los parámetros necesarios
+- Crea el entorno virtual en `venv/`
+- Instala automáticamente las dependencias listadas en `requirements.txt`
+- Crea un archivo `.env` de ejemplo con los parámetros necesarios
 
 ### 3. Configurar el archivo .env
 
