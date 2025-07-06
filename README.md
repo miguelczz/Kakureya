@@ -75,7 +75,7 @@ WOMPI_INTEGRITY_SECRET=clave_de_integridad_wompi
 ### 4. Ejecutar migraciones y crear superusuario
 ```bash
 python manage.py migrate
-python manage.py createsuperuser}
+python manage.py createsuperuser
 ```
 
 ### 5. Iniciar el servidor de desarrollo
