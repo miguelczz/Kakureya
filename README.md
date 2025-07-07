@@ -5,6 +5,10 @@
 <a href="https://kakureya-72c3bcabd294.herokuapp.com/">Sitio web</a>
 
 <img src="kakureya/static/images/readme/inicio.png" alt="Inicio"/>
+<img src="kakureya/static/images/readme/carrito.png" alt="Carrito"/>
+<img src="kakureya/static/images/readme/pasarela.png" alt="Pasarela"/>
+<img src="kakureya/static/images/readme/contrasennia.png" alt="Contraseña"/>
+
 ---
 
 ## Funcionalidades principales
