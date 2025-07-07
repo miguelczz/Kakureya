@@ -33,3 +33,6 @@ Thumbs.db
 # === ARCHIVOS DE DEPLOY A HEROKU / AWS ===
 *.tar.gz
 *.zip
+
+# === CONFIGURACIONES DE EDITORES ===
+.vscode/
