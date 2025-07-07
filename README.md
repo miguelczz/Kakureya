@@ -4,7 +4,7 @@
 
 <a href="https://kakureya-72c3bcabd294.herokuapp.com/">Sitio web</a>
 
-<img src="assets/images/readme/inicio.png" alt=""/>
+<img src="kakureya/static/images/readme/inicio.png" alt="Inicio"/>
 ---
 
 ## Funcionalidades principales
