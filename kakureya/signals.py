@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, Group
 from .models import UserProfile
 from django.core.exceptions import ObjectDoesNotExist
 
+# Asigna el grupo correspondiente cuando se crea un nuevo usuario
 @receiver(post_save, sender=User)
 def assign_user_group(sender, instance, created, **kwargs):
     if created:
@@ -14,11 +15,13 @@ def assign_user_group(sender, instance, created, **kwargs):
             cliente_group = Group.objects.get(name='Cliente')
             instance.groups.add(cliente_group)
 
+# Guarda el perfil del usuario cuando se guarda el modelo User
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     if hasattr(instance, 'userprofile'):
         instance.userprofile.save()
 
+# Crea el perfil del usuario automáticamente si no existe
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
