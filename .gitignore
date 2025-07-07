@@ -1,19 +1,35 @@
-# Ignorar entorno virtual
-venv/
-db.sqlite3
-
-# Ignorar archivos de configuración de entornos
-.env
-
-# Ignorar archivos de compilación de Python
+# === PYTHON & DJANGO ===
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
 *.pyd
-
-# Ignorar archivos de logs
 *.log
+db.sqlite3
 
-# Ignorar archivos del sistema operativo
+# === ENTORNO VIRTUAL ===
+venv/
+
+# === CONFIGURACIONES SENSIBLES ===
+.env
+
+# === ARCHIVOS DE ENTORNO ESTÁTICO ===
+staticfiles/
+
+# === ARCHIVOS DE SISTEMA OPERATIVO ===
 .DS_Store
 Thumbs.db
+
+# === ARCHIVOS DE DESPLIEGUE TEMPORALES ===
+*.bak
+*.tmp
+*.swp
+*.swo
+
+# === ARCHIVOS DE PAQUETES / ENTORNOS ===
+*.egg-info/
+.eggs/
+*.manifest
+
+# === ARCHIVOS DE DEPLOY A HEROKU / AWS ===
+*.tar.gz
+*.zip
