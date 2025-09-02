@@ -2,6 +2,8 @@
 
 **Kakureya** es una aplicación web desarrollada con Django que permite gestionar pedidos y despachos de comida japonesa a domicilio. Está orientada a mejorar la experiencia del cliente y optimizar la operación de restaurantes digitales, incluyendo dark kitchens, mediante un sistema eficiente.
 
+Certificado mejor proyecto PPI T&T categoría tercer semestre año 2025-1. 🏆
+
 <a href="https://kakureya-72c3bcabd294.herokuapp.com/">Sitio web</a>
 
 <img src="kakureya/static/images/readme/inicio.png" alt="Inicio"/>
