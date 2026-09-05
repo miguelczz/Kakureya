@@ -20,7 +20,7 @@
 
 <br><br>
 
-<h3>🏆 Reconocimiento Mejor proyecto PPI T&T, categoría tercer semestre, año 2025-1</h3>
+<h3>🏆 Certificado Mejor proyecto PPI T&T, categoría tercer semestre, año 2025-1</h3>
 
 <img src="https://github.com/miguelczz/miguelczz/blob/main/certificado-kakureya.png?raw=true&v=2"
      alt="Certificado Kakureya"
