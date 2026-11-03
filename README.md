@@ -1,5 +1,7 @@
 # Kakureya
 
+**English** · [Español](README.es.md)
+
 **Kakureya** is a web application built with Django that manages orders and deliveries for Japanese food takeout. It's designed to improve the customer experience and streamline the operation of digital restaurants, including dark kitchens, through an efficient system.
 
 <div align="center">
