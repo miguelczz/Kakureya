@@ -1,70 +1,70 @@
 # Kakureya
 
-**English** · [Español](README.es.md)
+**Español** · [English](README.en.md)
 
-**Kakureya** is a web application built with Django that manages orders and deliveries for Japanese food takeout. It's designed to improve the customer experience and streamline the operation of digital restaurants, including dark kitchens, through an efficient system.
+**Kakureya** es una aplicación web construida con Django que gestiona pedidos y domicilios de comida japonesa para llevar. Está pensada para mejorar la experiencia del cliente y agilizar la operación de restaurantes digitales, incluidas las dark kitchens, mediante un sistema eficiente.
 
 <div align="center">
 
-<img src="kakureya/static/images/readme/inicio.png" alt="Home" width="800"/>
+<img src="kakureya/static/images/readme/inicio.png" alt="Inicio" width="800"/>
 
 <br><br>
 
-<img src="kakureya/static/images/readme/carrito.png" alt="Cart" width="800"/>
+<img src="kakureya/static/images/readme/carrito.png" alt="Carrito" width="800"/>
 
 <br><br>
 
-<img src="kakureya/static/images/readme/pasarela.png" alt="Payment Gateway" width="800"/>
+<img src="kakureya/static/images/readme/pasarela.png" alt="Pasarela de pagos" width="800"/>
 
 <br><br>
 
-<img src="kakureya/static/images/readme/contrasennia.png" alt="Password" width="800"/>
+<img src="kakureya/static/images/readme/contrasennia.png" alt="Contraseña" width="800"/>
 
 <br><br>
 
-<h3>🏆 Certificate — Best PPI T&T Project, Third Semester Category, 2025-1</h3>
+<h3>🏆 Certificado mejor proyecto PPI T&T, categoría tercer semestre, 2025-1</h3>
 
 <img src="https://github.com/miguelczz/miguelczz/blob/main/certificado-kakureya.png?raw=true&v=2"
-     alt="Kakureya Certificate"
+     alt="Certificado de Kakureya"
      width="600"/>
 
 </div>
 
 ---
 
-## Main Features
+## Funcionalidades principales
 
-| Module/Component          | Functionality                                                                |
+| Módulo/Componente          | Funcionalidad                                                                |
 |----------------------------|------------------------------------------------------------------------------|
-| `usuarios/`                | User registration, login, password recovery, session-based authentication   |
-| `productos/`               | Product management: creation, editing, deletion                             |
-| `menu/`                    | Dynamic menu display organized by category                                  |
-| `pedidos/`                 | Shopping cart, order confirmation, per-user order history, order status tracking |
-| `pasarela/`                | Integration with the Wompi API for online payments                          |
-| `templates/` and `static/` | Responsive UI with organized HTML, CSS, and JS files                        |
-| `settings.py`              | Separate configuration for local and production environments                |
-| `.env` (not included)      | Sensitive variables: PostgreSQL connection, AWS keys, email, Wompi          |
+| `usuarios/`                | Registro de usuarios, inicio de sesión, recuperación de contraseña, autenticación basada en sesiones |
+| `productos/`               | Gestión de productos: creación, edición, eliminación                         |
+| `menu/`                    | Visualización dinámica del menú organizado por categoría                     |
+| `pedidos/`                 | Carrito de compras, confirmación de pedidos, historial de pedidos por usuario, seguimiento del estado del pedido |
+| `pasarela/`                | Integración con la API de Wompi para pagos en línea                          |
+| `templates/` y `static/`   | Interfaz responsive con archivos HTML, CSS y JS organizados                  |
+| `settings.py`              | Configuración separada para los entornos local y de producción               |
+| `.env` (no incluido)       | Variables sensibles: conexión a PostgreSQL, claves de AWS, correo, Wompi     |
 
 ---
 
-## Technologies Used
+## Tecnologías utilizadas
 
-- Backend language: Python 3.10+
-- Web framework: Django 4.x
-- Database: PostgreSQL (production environment), SQLite (local testing mode)
+- Lenguaje del backend: Python 3.10+
+- Framework web: Django 4.x
+- Base de datos: PostgreSQL (entorno de producción), SQLite (modo de pruebas local)
 - Frontend: HTML5, CSS3, Bootstrap 5, JavaScript
-- Session management: Django Auth with email-based password recovery
-- File storage: AWS S3 for static media
-- Payment gateway: Wompi (public and private API)
-- Version control: Git
+- Manejo de sesiones: Django Auth con recuperación de contraseña por correo electrónico
+- Almacenamiento de archivos: AWS S3 para archivos multimedia estáticos
+- Pasarela de pagos: Wompi (API pública y privada)
+- Control de versiones: Git
 
 ---
 
-## Local Installation & Setup
+## Instalación y configuración local
 
-This project includes an automated installation script (`setup.bat`) for Windows environments.
+Este proyecto incluye un script de instalación automatizada (`setup.bat`) para entornos Windows.
 
-### 1. Clone the repository
+### 1. Clonar el repositorio
 
 ```bash
 git clone https://github.com/miguelczz/Kakureya.git
